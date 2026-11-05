@@ -22,7 +22,7 @@ export function RoomCard({
   const roomLabel = ROOM_TYPE_LABELS[roomType as RoomType] ?? roomType;
 
   return (
-    <article className="group/room h-full border border-border bg-card text-card-foreground transition-[border-color,background-color,box-shadow] duration-[var(--motion-duration-control)] ease-[var(--motion-ease-out)] hover:border-foreground/35 hover:bg-background focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/20">
+    <article className="group/room h-full overflow-hidden rounded-2xl border border-border/80 bg-card text-card-foreground transition-[border-color,box-shadow] duration-[var(--motion-duration-control)] ease-[var(--motion-ease-out)] hover:border-foreground/25 hover:shadow-[0_8px_28px_-18px_#00000030] focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/20">
       <Link
         href={`/properties/${propertyId}/rooms/${id}`}
         aria-label={`Abrir habitación: ${roomLabel}`}
@@ -31,7 +31,7 @@ export function RoomCard({
         <div className="relative aspect-[4/3] border-b border-border bg-muted">
           {imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={imageUrl} alt="" className="size-full object-cover" />
+            <img src={imageUrl} alt="" loading="lazy" decoding="async" className="size-full object-contain" />
           ) : (
             <div className="flex size-full flex-col justify-between p-5 text-muted-foreground">
               <p className="text-[0.625rem] font-medium tracking-[0.14em] uppercase">
@@ -42,7 +42,7 @@ export function RoomCard({
           )}
         </div>
 
-        <div className="flex min-h-36 flex-col p-5">
+        <div className="flex min-h-36 flex-col gap-5 p-6">
           <div className="flex items-start justify-between gap-4">
             <h2 className="text-heading font-medium">{roomLabel}</h2>
             <ProductIcon

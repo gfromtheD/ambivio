@@ -224,8 +224,8 @@ export function RoomImageWorkspace({
       <section className="border-y border-border py-6 sm:py-8">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <p className="text-label">Fotografías originales</p>
-            <h2 className="mt-3 text-heading font-medium">Material de esta habitación</h2>
+
+            <h2 className="font-heading text-2xl font-medium">Fotografías originales</h2>
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
               Selecciona una fotografía lista para usarla como origen de la siguiente decoración.
             </p>
@@ -267,7 +267,7 @@ export function RoomImageWorkspace({
       {message && <p role="alert" className="rounded-sm border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive">{message}</p>}
 
       {images.length === 0 ? (
-        <section className="border-y border-border py-14 text-center">
+        <section className="rounded-2xl border border-border bg-muted/20 px-6 py-16 text-center">
           <div className="mx-auto max-w-md"><ProductIcon icon={Camera} className="mx-auto size-6" /><p className="mt-5 text-heading font-medium">Aún no hay fotografías.</p><p className="mt-2 text-sm text-muted-foreground">Añade una fotografía original para preparar esta habitación.</p></div>
         </section>
       ) : (
@@ -276,7 +276,7 @@ export function RoomImageWorkspace({
             const isSelected = image.id === selectedImage?.id;
             const isReady = image.status === "ready";
             return (
-              <article key={image.id} className={`group/image border bg-card transition-[border-color,box-shadow,opacity] duration-[var(--motion-duration-control)] ease-[var(--motion-ease-out)] ${isSelected ? "border-foreground ring-2 ring-ring/20" : "border-border hover:border-foreground/35"} ${image.status === "deleting" ? "opacity-60" : ""}`}>
+              <article key={image.id} className={`group/image overflow-hidden rounded-2xl border bg-card transition-[border-color,box-shadow,opacity] duration-[var(--motion-duration-control)] ease-[var(--motion-ease-out)] ${isSelected ? "border-foreground ring-2 ring-ring/20" : "border-border hover:border-foreground/35"} ${image.status === "deleting" ? "opacity-60" : ""}`}>
                 <button type="button" className="block w-full text-left outline-none focus-visible:ring-2 focus-visible:ring-ring/30" disabled={!isReady} onClick={() => setSelectedImageId(image.id)} aria-pressed={isSelected} aria-label={isReady ? `Seleccionar fotografía ${index + 1} para generar` : `Fotografía ${index + 1}: ${image.status === "pending" ? "subida pendiente" : "eliminándose"}`}>
                   <div className="relative aspect-[4/3] bg-muted">
                     {image.signedUrl ? (
@@ -298,7 +298,7 @@ export function RoomImageWorkspace({
       )}
 
       <section className="border-t border-border pt-8">
-        <p className="text-label">Siguiente paso</p>
+
         <div className="mt-4"><GenerationsSection roomId={roomId} sourceImageId={selectedImage?.id ?? null} originalImageUrl={selectedImage?.signedUrl ?? null} styles={styles} credits={credits} generations={generations} /></div>
       </section>
 

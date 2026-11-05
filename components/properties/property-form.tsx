@@ -35,27 +35,29 @@ export function PropertyForm({
   return (
     <form
       action={formAction}
-      className="max-w-xl border-t border-border pt-7"
+      className="workspace-form max-w-xl"
       aria-busy={pending}
     >
       <div className="grid gap-6">
         <div className="grid gap-2">
-          <Label htmlFor="title">Título</Label>
+          <Label htmlFor="title">Nombre de la propiedad</Label>
           <Input
             id="title"
             name="title"
             placeholder="Piso en el centro"
             defaultValue={initialTitle}
+            disabled={pending}
             required
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="address">Dirección</Label>
+          <Label htmlFor="address">Dirección <span className="font-normal text-muted-foreground">(opcional)</span></Label>
           <Input
             id="address"
             name="address"
             placeholder="Calle Mayor 12, Madrid"
             defaultValue={initialAddress}
+            disabled={pending}
           />
         </div>
         {state.error ? (

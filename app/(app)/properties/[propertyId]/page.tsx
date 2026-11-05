@@ -45,7 +45,7 @@ export default async function PropertyDetailPage({
         <div className="max-w-2xl">
           <p className="text-label">Propiedad</p>
           <div className="mt-2 flex flex-wrap items-center gap-3">
-            <h1 className="text-title">
+            <h1 className="font-heading text-title font-medium">
               {property.title}
             </h1>
             <Badge variant={property.status === "active" ? "default" : "secondary"}>

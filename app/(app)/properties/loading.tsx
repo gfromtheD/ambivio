@@ -12,9 +12,9 @@ export default function PropertiesLoading() {
         <Skeleton className="mt-4 h-10 w-56" />
         <Skeleton className="mt-4 h-4 w-full max-w-xl" />
       </div>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
         {[0, 1, 2].map((item) => (
-          <Skeleton key={item} className="aspect-[4/5]" />
+          <Skeleton key={item} className="h-64 rounded-2xl" />
         ))}
       </div>
     </div>

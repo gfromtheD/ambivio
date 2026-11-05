@@ -26,9 +26,9 @@ export function SidebarNavLink({
       aria-current={active ? "page" : undefined}
       onClick={onNavigate}
       className={cn(
-        "group/sidebar-link flex min-h-11 items-center gap-3 rounded-sm px-3 text-sm font-medium outline-none transition-[color,background-color,box-shadow] duration-[var(--motion-duration-control)] ease-[var(--motion-ease-out)] focus-visible:ring-2 focus-visible:ring-sidebar-ring/30",
+        "group/sidebar-link flex min-h-12 items-center gap-3 rounded-xl px-4 text-sm font-medium outline-none transition-[color,background-color,box-shadow] duration-[var(--motion-duration-control)] ease-[var(--motion-ease-out)] focus-visible:ring-2 focus-visible:ring-sidebar-ring/30",
         active
-          ? "bg-sidebar-primary text-sidebar-primary-foreground"
+          ? "bg-background text-sidebar-foreground shadow-[0_1px_5px_#00000008] ring-1 ring-border/70"
           : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
       )}
     >

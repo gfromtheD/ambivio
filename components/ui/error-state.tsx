@@ -14,13 +14,13 @@ export function ErrorState({
   onRetry?: () => void;
 }) {
   return (
-    <Card>
-      <CardContent className="flex flex-col items-center gap-3 py-16 text-center">
+    <Card role="alert" className="rounded-2xl border-border/70 shadow-none">
+      <CardContent className="flex flex-col items-center gap-5 px-6 py-16 text-center">
         <div className="flex size-12 items-center justify-center rounded-sm border border-destructive/20 bg-destructive/10">
           <ProductIcon icon={WarningTriangle} className="size-6 text-destructive" />
         </div>
-        <h2 className="text-lg font-semibold">{title}</h2>
-        <p className="max-w-sm text-sm text-muted-foreground">{description}</p>
+        <h2 className="font-heading text-2xl font-medium tracking-tight">{title}</h2>
+        <p className="max-w-sm text-sm leading-7 text-muted-foreground">{description}</p>
         {onRetry && (
           <Button variant="outline" onClick={onRetry}>
             Reintentar

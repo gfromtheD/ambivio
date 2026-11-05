@@ -31,7 +31,7 @@ export default async function EditPropertyPage({
           <Link href={`/properties/${property.id}`}><ProductIcon icon={ArrowLeft} className="size-4" />Volver a la propiedad</Link>
         </Button>
         <p className="text-[0.6875rem] font-medium tracking-[0.14em] text-muted-foreground uppercase">Datos del inmueble</p>
-        <h1 className="mt-3 text-title font-medium">Editar propiedad</h1>
+        <h1 className="mt-3 font-heading text-title font-medium">Editar propiedad</h1>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
           Actualiza los datos del inmueble.
         </p>

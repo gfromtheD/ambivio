@@ -87,7 +87,7 @@ export default async function RoomDetailPage({
           </Link>
         </Button>
         <p className="text-label">Habitación</p>
-        <h1 className="mt-3 text-title font-medium">{roomLabel}</h1>
+        <h1 className="mt-3 font-heading text-title font-medium">{roomLabel}</h1>
         <p className="mt-3 text-sm text-muted-foreground">
           Creada el {new Date(room.created_at).toLocaleDateString("es-ES", {
             day: "numeric",

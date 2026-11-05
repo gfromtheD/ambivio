@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { WorkspaceHeading } from "@/components/layout/workspace-heading";
 
 import { GenerationsHistoryView } from "@/components/generations/generations-history-view";
 import { listAllGenerations } from "@/services/generations";
@@ -11,14 +12,8 @@ export default async function GenerationsPage() {
   const generations = await listAllGenerations();
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Historial de Generaciones</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Visualiza, filtra y compara todas las decoraciones virtuales generadas con IA en tus inmuebles.
-        </p>
-      </div>
-
+    <div className="mx-auto max-w-7xl space-y-10">
+      <WorkspaceHeading title="Tus generaciones" description="Vuelve a cada propuesta, compara el antes y el después y guarda tus resultados." />
       <GenerationsHistoryView initialGenerations={generations} />
     </div>
   );

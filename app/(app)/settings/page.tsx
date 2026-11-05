@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { WorkspaceHeading } from "@/components/layout/workspace-heading";
 import type { Metadata } from "next";
 
 import { BillingSection } from "@/components/billing/billing-section";
@@ -19,12 +20,7 @@ export default async function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-12">
-      <div className="border-b border-border pb-8">
-        <p className="text-label">Espacio de trabajo</p>
-        <h1 className="mt-3 text-title font-medium">Configuración</h1>
-        <p className="mt-3 max-w-xl text-sm leading-6 text-muted-foreground">Gestiona la cuenta, la organización y el uso de Ambivio.</p>
-      </div>
-
+      <WorkspaceHeading title="Configuración" description="Tu cuenta, tu organización y el uso de Ambivio, en un mismo lugar." />
       <BillingSection
         creditsAvailable={subscription?.credits_available ?? organization?.creditsAvailable ?? 0}
         creditsReserved={subscription?.credits_reserved ?? 0}
