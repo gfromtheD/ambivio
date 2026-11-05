@@ -83,6 +83,8 @@ const NIMBUS_CSS = `
 @supports (-webkit-touch-callout:none){
   .nimbus-water{display:none}
   .nimbus-drop{display:block}
+  /* iOS can paint a large black block behind a backdrop-filter: plain translucent glass instead. */
+  .nimbus-glass{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 }
 .nimbus-item{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 16px;border:0;border-radius:999px;background:none;color:var(--n-fg-soft);
   font-family:inherit;font-weight:500;font-size:14px;line-height:1;letter-spacing:-.01em;text-decoration:none;cursor:pointer;transition:color .25s}
