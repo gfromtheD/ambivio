@@ -72,7 +72,7 @@ const NIMBUS_CSS = `
 .nimbus-glass{position:absolute;inset:0;border-radius:inherit;z-index:-2;overflow:hidden;background:var(--n-tint);
   -webkit-backdrop-filter:blur(10px) saturate(1.2) brightness(1.08);backdrop-filter:blur(10px) saturate(1.2) brightness(1.08);
   box-shadow:inset 0 1px 1px var(--n-rim),inset 0 0 0 1px rgba(255,255,255,.2),0 12px 32px -14px rgba(0,40,90,.5),0 2px 6px rgba(0,40,90,.1)}
-.nimbus-nav[data-refract="on"] .nimbus-glass{-webkit-backdrop-filter:url(#nimbus-refract) blur(2px) saturate(1.2) brightness(1.08);backdrop-filter:url(#nimbus-refract) blur(2px) saturate(1.2) brightness(1.08)}
+.nimbus-nav[data-refract="on"] .nimbus-glass{-webkit-backdrop-filter:var(--n-refract) blur(2px) saturate(1.2) brightness(1.08);backdrop-filter:var(--n-refract) blur(2px) saturate(1.2) brightness(1.08)}
 .nimbus-water{position:absolute;left:${-PAD}px;top:${-PAD}px;z-index:-1;pointer-events:none}
 .nimbus-nav[data-gl="off"] .nimbus-water{display:none}
 .nimbus-drop{display:none;position:absolute;top:6px;bottom:6px;left:0;border-radius:999px;z-index:-1;pointer-events:none;will-change:transform,width;
@@ -258,6 +258,7 @@ export function LiquidNavbar({
   const st = React.useRef(makeState())
   const [gl, setGl] = React.useState<"on" | "off">("on")
   const [refract, setRefract] = React.useState(false)
+  const filterId = `nimbus-refract-${React.useId().replace(/[^a-zA-Z0-9_-]/g, "")}`
   const [fx, setFx] = React.useState({ i: -1, n: 0 })
   const dark = tone === "dark" ? 1 : 0
   const darkRef = React.useRef(dark)
@@ -436,7 +437,11 @@ export function LiquidNavbar({
     // Use the existing glass fallback in iOS Safari and embedded iOS browsers.
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
     const useFallback = isIOS || CSS.supports("-webkit-touch-callout", "none")
-    s.glc = cv && !useFallback ? initGL(cv) : null
+    try {
+      s.glc = cv && !useFallback ? initGL(cv) : null
+    } catch {
+      s.glc = null
+    }
     if (!s.glc) setGl("off")
     const lost = (e: Event) => { e.preventDefault(); s.glc = null; setGl("off") }
     cv?.addEventListener("webglcontextlost", lost)
@@ -549,18 +554,18 @@ export function LiquidNavbar({
       onPointerMove={onMove}
       onPointerLeave={() => { setHovered(null); st.current.mouse.on = false; loop() }}
       onPointerDown={(e) => { const p = local(e.clientX, e.clientY); ripple(p.x, p.y, 0.8) }}
-      style={style}
+      style={{ ...style, "--n-refract": `url(#${filterId})` } as React.CSSProperties}
     >
       <style dangerouslySetInnerHTML={{ __html: NIMBUS_CSS }} />
-      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
-        <filter id="nimbus-refract" x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
+      {refract && <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
+        <filter id={filterId} x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
           <feTurbulence type="fractalNoise" baseFrequency="0.006 0.02" numOctaves="2" seed="7" result="noise" />
           <feGaussianBlur in="noise" stdDeviation="2" result="soft" />
           <feDisplacementMap in="SourceGraphic" in2="soft" scale="60" xChannelSelector="R" yChannelSelector="G" />
         </filter>
-      </svg>
+      </svg>}
       <span className="nimbus-glass" aria-hidden="true" />
-      <canvas className="nimbus-water" ref={canvasRef} aria-hidden="true" />
+      {gl === "on" && <canvas className="nimbus-water" ref={canvasRef} aria-hidden="true" />}
       <span className="nimbus-drop" ref={dropRef} aria-hidden="true" />
       {items.map((it, i) => {
         const kind = it.fx ?? "pop"
