@@ -10,8 +10,8 @@ export function LandingFaq({ items }: Props) {
   const reduce = useReducedMotion();
   return <div>{items.map(([question, answer], index) => {
     const open = openIndex === index;
-    return <div key={question} className="border-t last:border-b">
-      <h3><button id={`${id}-question-${index}`} type="button" aria-expanded={open} aria-controls={`${id}-answer-${index}`} onClick={() => setOpenIndex(open ? null : index)} className="group flex w-full cursor-pointer items-center justify-between gap-6 py-7 text-left font-medium focus-visible:outline-2 focus-visible:outline-offset-4">
+    return <div key={question} className="py-1">
+      <h3><button id={`${id}-question-${index}`} type="button" aria-expanded={open} aria-controls={`${id}-answer-${index}`} onClick={() => setOpenIndex(open ? null : index)} className="group flex w-full cursor-pointer items-center justify-between gap-6 py-7 text-left text-lg leading-snug font-medium md:text-xl focus-visible:outline-2 focus-visible:outline-offset-4">
         <span className="transition-colors duration-200 group-hover:text-neutral-500">{question}</span>
         <motion.span aria-hidden="true" className="relative flex size-6 shrink-0 items-center justify-center" animate={{ rotate: open ? 180 : 0 }} transition={{ duration: reduce ? 0 : .35, ease: [.22, 1, .36, 1] }}>
           <span className="absolute h-px w-3 bg-current" />
