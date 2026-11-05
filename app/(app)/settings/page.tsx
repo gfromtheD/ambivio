@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 
 import { BillingSection } from "@/components/billing/billing-section";
@@ -49,7 +50,7 @@ export default async function SettingsPage() {
             <div className="flex items-center justify-between gap-4 py-3"><dt className="text-muted-foreground">Email</dt><dd className="max-w-[14rem] truncate font-medium">{user?.email ?? "—"}</dd></div>
             <div className="flex items-center justify-between gap-4 py-3"><dt className="text-muted-foreground">Rol</dt><dd className="font-medium capitalize">{user?.role ?? "—"}</dd></div>
           </dl>
-          <div className="mt-6"><SignOutButton /></div>
+          <div className="mt-6 flex flex-wrap items-center gap-5"><Link href="/reset-password" className="text-sm font-medium underline underline-offset-4">Actualizar contraseña</Link><SignOutButton /></div>
         </div>
       </section>
     </div>

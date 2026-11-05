@@ -3,8 +3,8 @@ import { authorizeWorker } from "../_shared/worker_security.ts";
 // Receives an enqueue from process_jobs() via pg_net:
 //   { job_id, api_url }
 // Claims the job atomically, runs the MockAdapter, stores result or error.
-// No env vars required: API URL comes in the body, auth is passed through
-// from the Authorization header (anon JWT).
+// Requires configured SUPABASE_URL, service role and an internal caller.
+// Legacy api_url input is ignored and incoming public/user tokens are rejected.
 
 import { MockAdapter } from "../_shared/mock_adapter.ts";
 

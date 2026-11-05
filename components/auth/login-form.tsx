@@ -14,7 +14,7 @@ import { loginAction, type AuthState } from "@/services/auth";
 
 const initialState: AuthState = { error: null, success: null };
 
-export function LoginForm() {
+export function LoginForm({ initialError = null }: { initialError?: string | null }) {
   const [state, formAction, pending] = useActionState(loginAction, initialState);
 
   return (
@@ -41,7 +41,7 @@ export function LoginForm() {
             required
           />
         </div>
-        <AuthFeedback error={state.error} success={state.success} />
+        <AuthFeedback error={state.error ?? initialError} success={state.success} />
         <Button type="submit" className="w-full" disabled={pending}>
           {pending ? (
             <>

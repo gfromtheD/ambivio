@@ -1,28 +1,16 @@
 import { NextResponse } from "next/server";
+import { authRedirectOrigin, safeAuthNext } from "@/lib/auth-flow";
 import { createClient } from "@/lib/supabase/server";
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
-  const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/properties";
-
+  const url = new URL(request.url);
+  const next = safeAuthNext(url.searchParams.get("next"));
+  const origin = authRedirectOrigin(process.env.NEXT_PUBLIC_SITE_URL, `${url.protocol}//${request.headers.get("host") ?? url.host}`, process.env.NODE_ENV === "development");
+  const code = url.searchParams.get("code");
   if (code) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      const forwardedHost = request.headers.get("x-forwarded-host");
-      const isLocalEnv = process.env.NODE_ENV === "development";
-
-      if (isLocalEnv) {
-        return NextResponse.redirect(`${origin}${next}`);
-      } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${next}`);
-      } else {
-        return NextResponse.redirect(`${origin}${next}`);
-      }
-    }
-    console.error("Error canjeando código de autenticación:", error);
+    if (!error) return NextResponse.redirect(new URL(next, origin));
   }
-
-  return NextResponse.redirect(`${origin}/login?error=auth_callback_failed`);
+  return NextResponse.redirect(new URL(next === "/reset-password" ? "/reset-password?error=expired" : "/login?error=auth_callback_failed", origin));
 }

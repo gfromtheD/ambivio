@@ -159,7 +159,7 @@ El Edge Worker `process-generation` usa `SUPABASE_SERVICE_ROLE_KEY` en producci�
 
 - se inyecta como **secret del runtime de la función** (`supabase secrets set SUPABASE_SERVICE_ROLE_KEY=...` o Dashboard → Edge Functions → Secrets);
 - se lee con `Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")` en la función (ya implementado);
-- el fallback a passthrough del header entrante existe solo para desarrollo local;
+- no existe fallback a credenciales públicas ni passthrough del header entrante;
 - nunca se commitea ni se expone al navegador.
 
 ---

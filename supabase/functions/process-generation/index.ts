@@ -6,8 +6,8 @@ import { authorizeWorker } from "../_shared/worker_security.ts";
 // (ruta determinista con job_id) -> complete_generation (consume crédito + ledger).
 // Errores -> fail_generation (devolución de crédito si el job es terminal; el esquema
 // reabre jobs reintentables automáticamente).
-// Auth: usa SUPABASE_SERVICE_ROLE_KEY (env) si está disponible (producción); si no,
-// hace passthrough del header entrante (dev sin service role no puede escribir Storage).
+// Auth: requires an internal credential before using the configured service role.
+// api_url in legacy scheduler bodies is ignored; SUPABASE_URL is authoritative.
 
 import { MockAdapter } from "../_shared/mock_adapter.ts";
 import {
