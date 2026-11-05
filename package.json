@@ -12,6 +12,7 @@
     "test:stripe": "pwsh -NoProfile -File supabase/tests/stripe_webhook_e2e.ps1"
   },
   "dependencies": {
+    "@number-flow/react": "^0.6.2",
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.112.3",
     "class-variance-authority": "^0.7.1",

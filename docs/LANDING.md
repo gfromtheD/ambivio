@@ -38,3 +38,7 @@ Hero reducido a titular y fotografía a gran escala. CTA único en cabecera: «D
 ## Convergencia geométrica de la galería
 
 Las tres máscaras comparten la entrada de 0,8 s con expo.out y stagger de 0,4 s, seguida de 0,65 s con sine.inOut y stagger central de 0,2 s. En dormitorio y comedor se interpolan también posición, tamaño y radios de las piezas hasta una retícula que cubre el encuadre completo, con solape de 1 unidad para evitar costuras. La máscara permanece aplicada: se elimina el temporizador de 1900 ms y no se sustituye por una imagen sin máscara. Hover, foco y clic activan la selección; una selección nueva revierte la animación anterior. Movimiento reducido aplica directamente la geometría final.
+
+## Sustitución de precios por Pricing Section 3
+
+Se elimina `squishy-card-component.tsx` y se sustituye toda la sección por `pricing-section-3.tsx`, adaptado del recurso proporcionado. Reutiliza Card del producto y Framer Motion existente; añade NumberFlow, TimelineContent y VerticalCutReveal. No instala una segunda familia de iconos ni duplica Motion. Mantiene el panel oscuro destacado y la composición de tres columnas del recurso. Los paquetes se reciben de CREDIT_PACKAGES desde servidor. No se muestra un selector mensual/anual ni descuentos ficticios: los paquetes actuales son pagos únicos. Los botones enlazan al registro.
