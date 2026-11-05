@@ -3,12 +3,12 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import {
   ControlSlider,
-  Download,
   Eye,
   Expand,
   Xmark,
 } from "iconoir-react";
 
+import { DownloadImageButton } from "@/components/generations/download-image-button";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProductIcon } from "@/components/ui/product-icon";
@@ -244,12 +244,7 @@ export function BeforeAfterSlider({
           </Button>
 
           {showDownload && (
-            <a href={stagedUrl} download="staging-decorado.png">
-              <Button size="sm" className="text-xs h-8 gap-1.5">
-                <ProductIcon icon={Download} className="size-3.5" />
-                Descargar PNG
-              </Button>
-            </a>
+            <DownloadImageButton href={stagedUrl} />
           )}
         </div>
       </div>
@@ -269,12 +264,7 @@ export function BeforeAfterSlider({
             </div>
             <div className="flex items-center gap-3">
               {showDownload && (
-                <a href={stagedUrl} download="staging-decorado.png">
-                  <Button size="sm" className="gap-1.5 text-xs">
-                    <ProductIcon icon={Download} className="size-3.5" />
-                    Descargar PNG
-                  </Button>
-                </a>
+                <DownloadImageButton href={stagedUrl} />
               )}
               <Button
                 variant="outline"

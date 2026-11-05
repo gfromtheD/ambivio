@@ -18,13 +18,13 @@ export function EmptyState({
   action?: React.ReactNode;
 }) {
   return (
-    <Card>
-      <CardContent className="flex flex-col items-center gap-3 py-16 text-center">
-        <div className="flex size-12 items-center justify-center rounded-sm border border-border bg-muted">
+    <Card className="rounded-2xl border-border/70 bg-muted/20 shadow-none">
+      <CardContent className="flex flex-col items-center gap-5 px-6 py-16 text-center sm:py-20">
+        <div className="flex size-14 items-center justify-center rounded-2xl border border-border/70 bg-background">
           <ProductIcon icon={icon} className="size-6 text-muted-foreground" />
         </div>
-        <h2 className="text-lg font-semibold">{title}</h2>
-        <p className="max-w-sm text-sm text-muted-foreground">{description}</p>
+        <h2 className="font-heading text-2xl font-medium tracking-tight">{title}</h2>
+        <p className="max-w-sm text-sm leading-7 text-muted-foreground">{description}</p>
         {action}
       </CardContent>
     </Card>

@@ -5,7 +5,6 @@ import { RefreshDouble, Trash } from "iconoir-react";
 
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -59,7 +58,6 @@ export function DeletePropertyButton({
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
           <form action={formAction}>
-            <AlertDialogAction asChild>
             <Button
               type="submit"
               variant="destructive"
@@ -74,7 +72,6 @@ export function DeletePropertyButton({
                 )}
                 {pending ? "Eliminando…" : "Eliminar"}
               </Button>
-            </AlertDialogAction>
           </form>
         </AlertDialogFooter>
       </AlertDialogContent>

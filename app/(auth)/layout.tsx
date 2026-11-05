@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AmbivioMark } from "@/components/brand/ambivio-mark";
 
 export default function AuthLayout({
@@ -7,9 +8,9 @@ export default function AuthLayout({
 }) {
   return (
     <div className="min-h-dvh bg-background p-3 sm:p-5 lg:p-8">
-      <div className="mx-auto grid min-h-[calc(100dvh-1.5rem)] max-w-7xl overflow-hidden border border-border bg-card sm:min-h-[calc(100dvh-2.5rem)] lg:min-h-[calc(100dvh-4rem)] lg:grid-cols-[minmax(0,1.1fr)_minmax(25rem,0.9fr)]">
-        <section className="relative hidden flex-col justify-between border-r border-border p-10 lg:flex xl:p-14">
-          <AmbivioMark symbolClassName="size-8" />
+      <div className="mx-auto grid min-h-[calc(100dvh-1.5rem)] max-w-7xl overflow-hidden bg-card sm:min-h-[calc(100dvh-2.5rem)] lg:min-h-[calc(100dvh-4rem)] lg:grid-cols-[minmax(0,1.1fr)_minmax(25rem,0.9fr)]">
+        <section className="relative hidden flex-col justify-between p-10 lg:flex xl:p-14">
+          <Link href="/" aria-label="Ambivio, inicio"><AmbivioMark /></Link>
 
           <div className="max-w-xl">
             <p className="text-[0.6875rem] font-medium tracking-[0.14em] text-muted-foreground uppercase">
@@ -25,7 +26,7 @@ export default function AuthLayout({
             </p>
           </div>
 
-          <p className="max-w-sm border-t border-border pt-5 text-sm leading-relaxed text-muted-foreground">
+          <p className="max-w-sm pt-5 text-sm leading-relaxed text-muted-foreground">
             La fotografía muestra el espacio. Ambivio organiza el trabajo.
           </p>
         </section>

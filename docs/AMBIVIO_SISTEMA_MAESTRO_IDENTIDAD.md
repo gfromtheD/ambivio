@@ -950,3 +950,9 @@ La fotografía muestra el espacio.\
 La interfaz organiza el trabajo.\
 El movimiento aporta continuidad y calidad.\
 La identidad conecta la realidad con sus distintos futuros.
+
+## Actualización de marca — 2026-11-05
+
+Por decisión del propietario, el logo visible pasa a ser únicamente la wordmark «ambivio» en Chillax. Se retira el isotipo anterior de la landing, el acceso y el espacio de trabajo. Esta decisión sustituye las indicaciones anteriores que exigen un lockup con símbolo.
+
+El favicon SVG y el icono Apple usan una «a» minúscula trazada desde Chillax, peso 500, sobre un cuadrado blanco con esquinas redondeadas. El trazado evita depender de fuentes externas o instaladas.

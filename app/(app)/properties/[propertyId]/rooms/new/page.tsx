@@ -34,7 +34,7 @@ export default async function NewRoomPage({
           </Link>
         </Button>
         <p className="text-label">Nueva habitación</p>
-        <h1 className="mt-3 text-title font-medium">Crea la habitación.</h1>
+        <h1 className="mt-3 font-heading text-title font-medium">Crea la habitación.</h1>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
           Identifica la estancia. En el siguiente paso podrás añadir todas las
           fotografías originales que necesites.

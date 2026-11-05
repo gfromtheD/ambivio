@@ -1,9 +1,10 @@
+import { authorizeWorker } from "../_shared/worker_security.ts";
 // process-job Edge Function — Phase 0 validation worker.
 // Receives an enqueue from process_jobs() via pg_net:
 //   { job_id, api_url }
 // Claims the job atomically, runs the MockAdapter, stores result or error.
-// No env vars required: API URL comes in the body, auth is passed through
-// from the Authorization header (anon JWT).
+// Requires configured SUPABASE_URL, service role and an internal caller.
+// Legacy api_url input is ignored and incoming public/user tokens are rejected.
 
 import { MockAdapter } from "../_shared/mock_adapter.ts";
 
@@ -44,6 +45,14 @@ function respond(body: unknown, status = 200): Response {
 
 Deno.serve(async (req) => {
   if (req.method !== "POST") return respond({ error: "method_not_allowed" }, 405);
+  const access = await authorizeWorker(req, {
+    apiUrl: Deno.env.get("SUPABASE_URL") ?? "",
+    serviceKey: Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    workerSecret: Deno.env.get("WORKER_SHARED_SECRET"),
+  });
+  if (!access.ok) return respond({ error: access.error }, access.status);
+  const { apiUrl, auth, apikey } = access;
+
 
   let body: { job_id?: string; api_url?: string } = {};
   try {
@@ -53,9 +62,8 @@ Deno.serve(async (req) => {
   }
 
   const jobId = body.job_id;
-  const apiUrl = body.api_url;
-  const auth = req.headers.get("authorization") ?? "";
-  if (!jobId || !apiUrl) return respond({ error: "missing_job_id_or_api_url" }, 400);
+  if (typeof jobId !== "string" || !/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(jobId)) return respond({ error: "invalid_job_id" }, 400);
+  void apikey;
 
   // 1. Atomic claim: only one worker can transition pending -> processing.
   let claimed: Record<string, unknown> | null;
@@ -64,11 +72,11 @@ Deno.serve(async (req) => {
       p_job_id: jobId,
       p_worker: "edge-function-1",
     }));
-  } catch (err) {
-    return respond({ job_id: jobId, ok: false, step: "claim", error: String(err) }, 500);
+  } catch {
+    return respond({ job_id: jobId, ok: false, step: "claim", error: "claim_failed" }, 500);
   }
 
-  if (!claimed) {
+  if (!claimed || claimed.id !== jobId) {
     return respond({
       job_id: jobId,
       ok: false,
@@ -94,6 +102,6 @@ Deno.serve(async (req) => {
     } catch {
       // Failure recording failed; nothing else to do.
     }
-    return respond({ job_id: jobId, ok: false, step: "generate", error: String(err) }, 500);
+    return respond({ job_id: jobId, ok: false, step: "generate", error: "generation_failed" }, 500);
   }
 });

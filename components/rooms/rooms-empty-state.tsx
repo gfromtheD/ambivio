@@ -6,13 +6,12 @@ import { ProductIcon } from "@/components/ui/product-icon";
 
 export function RoomsEmptyState({ propertyId }: { propertyId: string }) {
   return (
-    <section className="border-y border-border py-14 sm:py-20">
+    <section className="rounded-2xl border border-border/70 bg-muted/20 px-7 py-12 sm:px-12 sm:py-16">
       <div className="max-w-xl">
-        <div className="flex size-11 items-center justify-center rounded-sm border border-border bg-muted">
+        <div className="flex size-11 items-center justify-center rounded-xl border border-border bg-background">
           <ProductIcon icon={HomeAlt} className="size-5" />
         </div>
-        <p className="mt-8 text-label">El material de esta propiedad</p>
-        <h2 className="mt-3 text-title font-medium">
+        <h2 className="mt-7 font-heading text-title font-medium">
           Añade la primera habitación.
         </h2>
         <p className="mt-4 max-w-lg text-sm leading-relaxed text-muted-foreground">

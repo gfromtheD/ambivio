@@ -44,7 +44,7 @@ export function RoomCreateForm({ propertyId }: { propertyId: string }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-xl border-t border-border pt-7" aria-busy={pending}>
+    <form onSubmit={handleSubmit} className="workspace-form max-w-xl" aria-busy={pending}>
       <div className="grid gap-7">
         <div className="grid gap-2">
           <Label htmlFor="room-type">Tipo de habitación</Label>

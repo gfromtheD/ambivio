@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Menu, User, Xmark } from "iconoir-react";
 import { Dialog as DialogPrimitive } from "radix-ui";
 
+import { WorkspaceBreadcrumbs } from "@/components/layout/workspace-breadcrumbs";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { AmbivioMark } from "@/components/brand/ambivio-mark";
 import { SignOutButton } from "@/components/layout/sign-out-button";
@@ -35,7 +36,8 @@ export function AppShell({
   };
 
   return (
-    <div className="min-h-dvh bg-muted/35">
+    <div className="workspace min-h-dvh bg-background">
+      <a href="#workspace-content" className="sr-only fixed top-3 left-3 z-[100] rounded-full bg-foreground px-5 py-3 text-sm text-background focus:not-sr-only">Saltar al contenido</a>
       <div className="grid min-h-dvh lg:grid-cols-[17rem_minmax(0,1fr)]">
         <AppSidebar
           {...sidebarProps}
@@ -43,7 +45,7 @@ export function AppShell({
         />
 
         <div className="flex min-w-0 flex-col">
-          <header className="flex h-16 shrink-0 items-center justify-between border-b bg-background/95 px-4 backdrop-blur-sm sm:px-6 lg:px-8">
+          <header className="sticky top-0 z-30 flex h-20 shrink-0 items-center justify-between gap-3 border-b border-border/60 bg-background/90 px-5 backdrop-blur-xl sm:px-8 lg:px-12">
             <div className="flex min-w-0 items-center gap-3">
               <DialogPrimitive.Root
                 open={mobileNavigationOpen}
@@ -83,7 +85,8 @@ export function AppShell({
                 </DialogPrimitive.Portal>
               </DialogPrimitive.Root>
 
-              <AmbivioMark className="lg:hidden" symbolClassName="size-5" />
+              <AmbivioMark className="sm:hidden" />
+              <WorkspaceBreadcrumbs />
             </div>
 
             <div className="flex min-w-0 items-center gap-2 sm:gap-3">
@@ -95,7 +98,7 @@ export function AppShell({
             </div>
           </header>
 
-          <main className="min-w-0 flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+          <main id="workspace-content" tabIndex={-1} className="min-w-0 flex-1 px-5 pt-9 pb-20 outline-none sm:px-8 sm:pt-12 lg:px-12 lg:pt-14">
             {children}
           </main>
         </div>

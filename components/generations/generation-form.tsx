@@ -73,7 +73,7 @@ export function GenerationForm({
         <p role="alert" className="text-sm text-destructive">{state.error ?? disabledReason}</p>
       )}
 
-      <Button type="submit" disabled={pending || disabled || !styleId} className="gap-2">
+      <Button type="submit" disabled={pending || disabled || !styleId || !sourceImageId} className="gap-2">
         <ProductIcon
           icon={pending ? RefreshDouble : FrameAlt}
           className={`size-4 ${pending ? "animate-spin motion-reduce:animate-none" : ""}`}

@@ -51,7 +51,7 @@ export default async function RoomsPage({
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-2xl">
             <p className="text-label">Material visual de la propiedad</p>
-            <h1 className="mt-3 text-title font-medium">Habitaciones</h1>
+            <h1 className="mt-3 font-heading text-title font-medium">Habitaciones</h1>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               Cada estancia conserva su fotografía original como punto de
               partida para la decoración.
@@ -69,7 +69,7 @@ export default async function RoomsPage({
       {rooms.length === 0 ? (
         <RoomsEmptyState propertyId={propertyId} />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {roomsWithImages.map((room) => (
             <RoomCard
               key={room.id}

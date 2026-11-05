@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle, Clock, Download, FrameAlt, RefreshDouble, Undo, WarningTriangle } from "iconoir-react";
+import { CheckCircle, Clock, FrameAlt, Undo, WarningTriangle } from "iconoir-react";
 
+import { DownloadImageButton } from "@/components/generations/download-image-button";
 import { BeforeAfterSlider } from "@/components/generations/before-after-slider";
 import { GenerationForm } from "@/components/generations/generation-form";
 import { Badge } from "@/components/ui/badge";
@@ -49,44 +50,13 @@ function ProcessingPanel({ status }: { status: "pending" | "processing" }) {
         </div>
         <div>
           <p className="text-sm font-medium">{isProcessing ? "El espacio se está reinterpretando." : "Tu generación está registrada y esperando procesamiento."}</p>
-          <p className="mt-1 text-sm leading-6 text-muted-foreground">{isProcessing ? "Puedes continuar trabajando: el resultado aparecerá aquí al completarse." : "La cola se actualizará automáticamente cuando el worker la recoja."}</p>
+          <p className="mt-1 text-sm leading-6 text-muted-foreground">{isProcessing ? "Puedes continuar trabajando: el resultado aparecerá aquí al completarse." : "El estado se actualizará aquí automáticamente."}</p>
         </div>
       </div>
     </div>
   );
 }
 
-function DownloadResultButton({ href, generationId }: { href: string; generationId: string }) {
-  const [status, setStatus] = useState<"idle" | "downloading" | "error">("idle");
-  async function download() {
-    setStatus("downloading");
-    try {
-      const response = await fetch(href);
-      if (!response.ok) throw new Error("download_failed");
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = `ambivio-${generationId}.png`;
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-      URL.revokeObjectURL(url);
-      setStatus("idle");
-    } catch {
-      setStatus("error");
-    }
-  }
-  return (
-    <div className="grid gap-2">
-      <Button type="button" onClick={() => void download()} disabled={status === "downloading"}>
-        <ProductIcon icon={status === "downloading" ? RefreshDouble : Download} className={`size-4 ${status === "downloading" ? "animate-spin motion-reduce:animate-none" : ""}`} />
-        {status === "downloading" ? "Preparando descarga…" : "Descargar imagen"}
-      </Button>
-      {status === "error" && <p role="alert" className="text-xs text-destructive">No se pudo descargar la imagen. Recarga la página para obtener un enlace nuevo.</p>}
-    </div>
-  );
-}
 
 export function GenerationsSection({ roomId, sourceImageId, originalImageUrl, styles, credits, generations }: {
   roomId: string;
@@ -99,7 +69,11 @@ export function GenerationsSection({ roomId, sourceImageId, originalImageUrl, st
   const router = useRouter();
   const [actionError, setActionError] = useState<string | null>(null);
   const activeGeneration = generations.find((generation) => generation.status === "pending" || generation.status === "processing");
-  const completedGeneration = generations.find((generation) => generation.status === "completed" && generation.outputImageUrl);
+  const [selectedResultId, setSelectedResultId] = useState<string | null>(null);
+  const [workingId, setWorkingId] = useState<string | null>(null);
+  const resultRef = useRef<HTMLElement>(null);
+  const completedGeneration = generations.find(generation => generation.id === selectedResultId && generation.status === "completed" && generation.outputImageUrl)
+    ?? generations.find(generation => generation.status === "completed" && generation.outputImageUrl);
   const hasActive = Boolean(activeGeneration);
   const creditsAvailable = credits?.creditsAvailable ?? 0;
   const disabledReason = !sourceImageId ? "Selecciona una fotografía original lista para generar." : credits && creditsAvailable <= 0 ? "No tienes créditos disponibles." : null;
@@ -111,17 +85,20 @@ export function GenerationsSection({ roomId, sourceImageId, originalImageUrl, st
   }, [hasActive, router]);
 
   const styleName = (styleId: string) => styles.find((style) => style.id === styleId)?.name ?? "Estilo";
-  async function cancel(generationId: string) {
+  async function runGenerationAction(generationId: string, action: typeof cancelGenerationAction) {
     setActionError(null);
-    const result = await cancelGenerationAction(generationId);
-    setActionError(result.error);
-    if (!result.error) router.refresh();
+    setWorkingId(generationId);
+    try {
+      const result = await action(generationId);
+      setActionError(result.error);
+      if (!result.error) router.refresh();
+    } catch {
+      setActionError("No se pudo completar la acción. Comprueba la conexión e inténtalo de nuevo.");
+    } finally { setWorkingId(null); }
   }
-  async function retry(generationId: string) {
-    setActionError(null);
-    const result = await retryGenerationAction(generationId);
-    setActionError(result.error);
-    if (!result.error) router.refresh();
+  function viewResult(generationId: string) {
+    setSelectedResultId(generationId);
+    requestAnimationFrame(() => resultRef.current?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }));
   }
 
   return (
@@ -131,7 +108,7 @@ export function GenerationsSection({ roomId, sourceImageId, originalImageUrl, st
           {originalImageUrl ? (
             // Signed private URLs cannot be passed to next/image as remote static hosts.
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={originalImageUrl} alt="Fotografía original seleccionada" className="size-full object-cover" />
+            <img src={originalImageUrl} alt="Fotografía original seleccionada" className="size-full object-contain" />
           ) : <div className="grid size-full place-items-center p-6 text-center text-sm text-muted-foreground">Selecciona una fotografía lista para configurar la generación.</div>}
           <span className="absolute left-3 top-3 border border-foreground bg-background px-2 py-1 text-[0.625rem] font-medium uppercase tracking-[0.14em]">Fotografía fuente</span>
         </div>
@@ -149,11 +126,11 @@ export function GenerationsSection({ roomId, sourceImageId, originalImageUrl, st
       {activeGeneration && <section aria-label="Generación en curso" className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3"><div><p className="text-label">Generación actual</p><h2 className="mt-2 text-heading font-medium">{styleName(activeGeneration.styleId)}</h2></div><Badge variant={statusVariant(activeGeneration.status)}>{GENERATION_STATUS_LABELS[activeGeneration.status as GenerationStatus] ?? activeGeneration.status}</Badge></div>
         <ProcessingPanel status={activeGeneration.status as "pending" | "processing"} />
-        {activeGeneration.status === "pending" && <Button type="button" variant="outline" size="sm" onClick={() => void cancel(activeGeneration.id)}>Cancelar generación</Button>}
+        {activeGeneration.status === "pending" && <Button type="button" variant="outline" size="sm" disabled={workingId !== null} onClick={() => void runGenerationAction(activeGeneration.id, cancelGenerationAction)}>Cancelar generación</Button>}
       </section>}
 
-      {completedGeneration?.outputImageUrl && <section className="space-y-5" aria-label="Resultado de la generación">
-        <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-label">Resultado listo</p><h2 className="mt-2 text-heading font-medium">{styleName(completedGeneration.styleId)}</h2><p className="mt-2 text-sm text-muted-foreground">Completada {completedGeneration.completedAt ? formatDate(completedGeneration.completedAt) : "recientemente"}.</p></div><DownloadResultButton href={completedGeneration.outputImageUrl} generationId={completedGeneration.id} /></div>
+      {completedGeneration?.outputImageUrl && <section ref={resultRef} className="scroll-mt-6 space-y-5" aria-label="Resultado de la generación">
+        <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-label">Resultado listo</p><h2 className="mt-2 text-heading font-medium">{styleName(completedGeneration.styleId)}</h2><p className="mt-2 text-sm text-muted-foreground">Completada {completedGeneration.completedAt ? formatDate(completedGeneration.completedAt) : "recientemente"}.</p></div><DownloadImageButton href={completedGeneration.outputImageUrl} generationId={completedGeneration.id} /></div>
         {completedGeneration.sourceImageUrl ? <BeforeAfterSlider originalUrl={completedGeneration.sourceImageUrl} stagedUrl={completedGeneration.outputImageUrl} altStaged={`Resultado de estilo ${styleName(completedGeneration.styleId).toLowerCase()}`} title={`Resultado · ${styleName(completedGeneration.styleId)}`} showDownload={false} /> : (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={completedGeneration.outputImageUrl} alt="Resultado de la generación" className="w-full border object-contain" />
@@ -165,7 +142,8 @@ export function GenerationsSection({ roomId, sourceImageId, originalImageUrl, st
         {generations.length === 0 ? <p className="border border-dashed border-border px-4 py-8 text-sm text-muted-foreground">Aún no hay generaciones para esta habitación.</p> : (
           <div className="divide-y divide-border border-y border-border">{generations.map((generation) => <article key={generation.id} className="flex flex-wrap items-center justify-between gap-4 py-4">
             <div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><p className="text-sm font-medium">{styleName(generation.styleId)}</p><Badge variant={statusVariant(generation.status)}>{GENERATION_STATUS_LABELS[generation.status as GenerationStatus] ?? generation.status}</Badge></div><p className="mt-1 text-xs text-muted-foreground">Creada {formatDate(generation.createdAt)}{generation.retryCount > 1 ? ` · reintento ${generation.retryCount - 1}` : ""}</p>{generation.status === "failed" && <p className="mt-2 text-sm text-muted-foreground">No se pudo completar. Puedes volver a intentarlo.</p>}{generation.status === "cancelled" && <p className="mt-2 text-sm text-muted-foreground">Cancelada antes de iniciar el procesamiento.</p>}</div>
-            {generation.status === "failed" && <Button type="button" variant="outline" size="sm" onClick={() => void retry(generation.id)}><ProductIcon icon={Undo} className="size-3.5" /> Reintentar</Button>}
+            {generation.status === "completed" && generation.outputImageUrl && <Button type="button" variant="outline" size="sm" aria-pressed={completedGeneration?.id === generation.id} onClick={() => viewResult(generation.id)}>Ver resultado</Button>}
+            {generation.status === "failed" && <Button type="button" variant="outline" size="sm" disabled={workingId !== null} onClick={() => void runGenerationAction(generation.id, retryGenerationAction)}><ProductIcon icon={Undo} className="size-3.5" /> Reintentar</Button>}
             {generation.status === "failed" && !generation.errorMessage && <ProductIcon icon={WarningTriangle} className="size-4 text-muted-foreground" aria-label="Generación fallida" />}{generation.status === "completed" && <ProductIcon icon={CheckCircle} className="size-4" aria-label="Generación completada" />}
           </article>)}</div>
         )}
@@ -173,3 +151,4 @@ export function GenerationsSection({ roomId, sourceImageId, originalImageUrl, st
     </div>
   );
 }
+

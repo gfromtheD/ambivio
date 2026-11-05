@@ -18,7 +18,7 @@ export function AuthCard({
         aria-label="Ambivio · ir a iniciar sesión"
         className="outline-none focus-visible:ring-2 focus-visible:ring-ring/30 lg:hidden"
       >
-        <AmbivioMark symbolClassName="size-6" />
+        <AmbivioMark />
       </Link>
       <p className="mt-10 text-[0.6875rem] font-medium tracking-[0.14em] text-muted-foreground uppercase lg:mt-0">
         Área privada
@@ -29,7 +29,7 @@ export function AuthCard({
       <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
         {description}
       </p>
-      <div className="mt-8 border-t border-border pt-6">{children}</div>
+      <div className="mt-8 pt-6">{children}</div>
     </section>
   );
 }

@@ -159,7 +159,7 @@ El Edge Worker `process-generation` usa `SUPABASE_SERVICE_ROLE_KEY` en producci�
 
 - se inyecta como **secret del runtime de la función** (`supabase secrets set SUPABASE_SERVICE_ROLE_KEY=...` o Dashboard → Edge Functions → Secrets);
 - se lee con `Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")` en la función (ya implementado);
-- el fallback a passthrough del header entrante existe solo para desarrollo local;
+- no existe fallback a credenciales públicas ni passthrough del header entrante;
 - nunca se commitea ni se expone al navegador.
 
 ---
@@ -321,3 +321,17 @@ Antes de producción:
 ## 19. Regla
 
 Nunca sacrificar aislamiento multi-tenant para acelerar desarrollo.
+
+## Endurecimiento de workers y borrado (2026-11)
+
+Los workers ya no aceptan una URL de API controlada por el cuerpo. Solo usan SUPABASE_URL del entorno. Requieren una credencial interna: Authorization con la service role existente o X-Worker-Secret coincidente con WORKER_SHARED_SECRET. No aceptan una clave pública ni un JWT de usuario. No existe passthrough de credenciales entrantes a Storage. La configuración incompleta falla cerrada y los errores de RPC no se devuelven completos al solicitante.
+
+Despliegue coordinado necesario: (1) generar un secreto aleatorio exclusivo de al menos 32 bytes, (2) guardar el mismo valor en el secreto de Edge WORKER_SHARED_SECRET y en app_config.worker_secret mediante acceso administrativo, (3) aplicar 20261106000000_worker_request_auth.sql para que los schedulers lo envíen, (4) desplegar process-generation y process-job, (5) comprobar una invocación interna y el rechazo de peticiones públicas. Mantener verify_jwt; no desactivar la protección del gateway. No publicar el secreto en archivos versionados ni en logs.
+
+El borrado de propiedades reutiliza prepare/complete_room_deletion y la limpieza de Storage de cada habitación. La nueva migración 20261106010000_property_deletion_cleanup.sql impide el borrado directo por authenticated y exige que no queden habitaciones ni objetos privados. No cambia las reglas de consumo o devolución de créditos.
+
+Validación local: worker_security_test.ts (autorización y destino fijo), Deno check de ambos workers y security_isolation.sql en una base aislada con rollback. La comprobación local no certifica que el servidor remoto haya aplicado estas migraciones.
+
+### Verificación remota completada (2026-11-05)
+
+Aplicadas las migraciones 20261106000000, 20261106010000 y 20261106020000 con historial. Desplegados process-generation v10 y process-job v5, ambos con verify_jwt. Peticiones públicas: 401. Peticiones internas sobre UUID inexistente: claimed:false, sin crear trabajos. Corregida la interpretación de una fila compuesta vacía en process-job. RLS, buckets privados, permisos internos, configuración privada y guardas de borrado verificados en catálogo. Origen y callbacks de recuperación revisados; eliminado el comodín global de Vercel y añadido localhost actual. No se han ejecutado pruebas destructivas con datos de clientes ni cambios de reglas de crédito.

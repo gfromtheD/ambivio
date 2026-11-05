@@ -1,3 +1,4 @@
+import { authorizeWorker } from "../_shared/worker_security.ts";
 // process-generation — Fase 1 worker del pipeline de generación.
 // Invocado desde process_generation_jobs() (pg_cron + pg_net):
 //   { generation_id, api_url? }
@@ -5,8 +6,8 @@
 // (ruta determinista con job_id) -> complete_generation (consume crédito + ledger).
 // Errores -> fail_generation (devolución de crédito si el job es terminal; el esquema
 // reabre jobs reintentables automáticamente).
-// Auth: usa SUPABASE_SERVICE_ROLE_KEY (env) si está disponible (producción); si no,
-// hace passthrough del header entrante (dev sin service role no puede escribir Storage).
+// Auth: requires an internal credential before using the configured service role.
+// api_url in legacy scheduler bodies is ignored; SUPABASE_URL is authoritative.
 
 import { MockAdapter } from "../_shared/mock_adapter.ts";
 import {
@@ -141,6 +142,14 @@ async function downloadOriginalImage(
 
 Deno.serve(async (req) => {
   if (req.method !== "POST") return respond({ error: "method_not_allowed" }, 405);
+  const access = await authorizeWorker(req, {
+    apiUrl: Deno.env.get("SUPABASE_URL") ?? "",
+    serviceKey: Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    workerSecret: Deno.env.get("WORKER_SHARED_SECRET"),
+  });
+  if (!access.ok) return respond({ error: access.error }, access.status);
+  const { apiUrl, auth, apikey } = access;
+
 
   let body: { generation_id?: string; api_url?: string } = {};
   try {
@@ -150,16 +159,7 @@ Deno.serve(async (req) => {
   }
 
   const generationId = body.generation_id;
-  if (!generationId) return respond({ error: "missing_generation_id" }, 400);
-
-  const apiUrl = body.api_url ?? Deno.env.get("SUPABASE_URL") ?? "";
-  if (!apiUrl) return respond({ error: "missing_api_url" }, 400);
-
-  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-  const incomingAuth = req.headers.get("authorization") ?? "";
-  const auth = serviceKey ? `Bearer ${serviceKey}` : incomingAuth;
-  const apikey = serviceKey ? serviceKey : incomingAuth.replace(/^Bearer\s+/i, "");
-  if (!auth) return respond({ error: "missing_auth" }, 401);
+  if (typeof generationId !== "string" || !/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(generationId)) return respond({ error: "invalid_generation_id" }, 400);
 
   // 1. Claim atómico: solo un worker puede pasar pending -> processing.
   let claimed: Row | null;
@@ -167,8 +167,8 @@ Deno.serve(async (req) => {
     claimed = await callRpc(apiUrl, auth, apikey, "claim_generation", {
       p_generation_id: generationId,
     });
-  } catch (err) {
-    return respond({ generation_id: generationId, ok: false, step: "claim", error: String(err) }, 500);
+  } catch {
+    return respond({ generation_id: generationId, ok: false, step: "claim", error: "claim_failed" }, 500);
   }
 
   if (!claimed) {

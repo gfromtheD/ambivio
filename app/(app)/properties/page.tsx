@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { WorkspaceHeading } from "@/components/layout/workspace-heading";
 import Link from "next/link";
 import { Plus } from "iconoir-react";
 
@@ -17,29 +18,15 @@ export default async function PropertiesPage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-10">
-      <div className="flex flex-col gap-5 border-b border-border pb-8 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-[0.6875rem] font-medium tracking-[0.14em] text-muted-foreground uppercase">
-            Cartera inmobiliaria
-          </p>
-          <h1 className="mt-3 text-title font-medium">Propiedades</h1>
-          <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
-            Organiza los inmuebles y prepara cada espacio a partir de sus
-            fotografías originales.
-          </p>
-        </div>
-        <Link href="/properties/new">
-          <Button>
-            <ProductIcon icon={Plus} className="size-4" />
-            Crear propiedad
-          </Button>
-        </Link>
-      </div>
-
+      <WorkspaceHeading
+        title="Propiedades"
+        description="Un lugar para cada inmueble. Prepara sus espacios a partir de las fotografías originales."
+        action={<Button asChild><Link href="/properties/new"><ProductIcon icon={Plus} className="size-4" />Crear propiedad</Link></Button>}
+      />
       {properties.length === 0 ? (
         <PropertiesEmptyState />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {properties.map((property) => (
             <PropertyCard
               key={property.id}
