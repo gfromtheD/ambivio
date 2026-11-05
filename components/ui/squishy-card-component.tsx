@@ -3,20 +3,19 @@
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 
-type Props = { name: string; price: number; credits: number; featured?: boolean };
-export default function SquishyCard({ name, price, credits, featured = false }: Props) {
+type Props = { name: string; price: number; credits: number; variant: "starter" | "pro" | "agency" };
+const transition = { duration: .8, ease: "backInOut" as const };
+export default function SquishyCard({ name, price, credits, variant }: Props) {
   const reduce = useReducedMotion();
-  return <motion.article whileHover={reduce ? undefined : "hover"} transition={{ duration: .45, ease: "backInOut" }} variants={{ hover: { scale: 1.025 } }} className={`relative flex min-h-[390px] flex-col overflow-hidden rounded-xl border p-8 ${featured ? "bg-neutral-900 text-white" : "bg-neutral-100 text-neutral-950"}`}>
-    <div className="relative z-10">
-      <span className="mb-7 inline-flex rounded-full border border-current/25 px-3 py-1 text-sm">{name}</span>
-      <p className="font-heading text-6xl font-medium tracking-tight">{price} €</p>
-      <p className="mt-2 text-sm opacity-65">Pago único · {credits} créditos</p>
-      <p className="mt-7 max-w-56 text-base leading-relaxed">{credits} generaciones para explorar nuevas posibilidades en tus inmuebles.</p>
-    </div>
-    <Link href="/register" className={`relative z-20 mt-10 block rounded border px-5 py-3 text-center text-sm font-medium transition-colors ${featured ? "border-white bg-white text-black hover:bg-white/85" : "border-neutral-900 hover:bg-neutral-900 hover:text-white"}`}>Crear cuenta <span aria-hidden="true">↗</span></Link>
-    <motion.svg aria-hidden="true" width="320" height="384" viewBox="0 0 320 384" className="pointer-events-none absolute inset-0 z-0 h-full w-full opacity-[.06]" variants={{ hover: { scale: 1.5 } }} transition={{ duration: 1, ease: "backInOut" }}>
-      <motion.circle variants={{ hover: { scaleY: .5, y: -25 } }} transition={{ duration: 1, ease: "backInOut", delay: .2 }} cx="160.5" cy="114.5" r="101.5" fill="currentColor" />
-      <motion.ellipse variants={{ hover: { scaleY: 2.25, y: -25 } }} transition={{ duration: 1, ease: "backInOut", delay: .2 }} cx="160.5" cy="265.5" rx="101.5" ry="43.5" fill="currentColor" />
+  const pro = variant === "pro";
+  return <motion.article initial="rest" whileHover={reduce ? undefined : "hover"} whileFocus={reduce ? undefined : "hover"} className={`relative flex min-h-[480px] flex-col overflow-hidden rounded-xl p-8 ${pro ? "bg-neutral-950 text-white" : variant === "agency" ? "bg-neutral-800 text-white" : "bg-neutral-200 text-neutral-950"}`}>
+    <div className="relative z-10"><h3 className="text-xl font-medium">{name}</h3><p className="mt-5 font-heading text-6xl font-medium tracking-tight">{price} €</p><p className={`mt-3 text-base ${pro || variant === "agency" ? "text-neutral-300" : "text-neutral-700"}`}>{credits} créditos · Pago único</p></div>
+    <motion.svg aria-hidden="true" viewBox="0 0 320 220" className={`relative my-6 h-40 w-full ${variant === "starter" ? "text-white" : "text-neutral-400"}`} transition={transition}>
+      {variant === "starter" ? <motion.circle cx="160" cy="110" r="72" variants={{rest:{scale:1},hover:{scaleX:1.35,scaleY:.7,rotate:15}}} transition={transition} fill="currentColor" /> : variant === "pro" ? <>
+        <motion.circle cx="160" cy="72" r="65" variants={{hover:{scaleY:.65,y:18}}} transition={transition} fill="currentColor" />
+        <motion.ellipse cx="160" cy="170" rx="65" ry="26" variants={{hover:{scaleY:1.7,y:-10}}} transition={transition} fill="currentColor" />
+      </> : <>{[0,1,2].map(i=><motion.rect key={i} x={55+i*70} y={50-i*10} width="62" height={120+i*10} rx="3" variants={{hover:{y:(1-i)*20,scaleY:1+i*.12,rotate:(i-1)*8}}} transition={{...transition,delay:i*.08}} fill="currentColor" />)}</>}
     </motion.svg>
+    <Link href="/register" className={`relative z-20 mt-auto block rounded border px-5 py-3 text-center text-sm font-medium transition-colors ${pro || variant === "agency" ? "border-white bg-white text-neutral-950 hover:bg-neutral-200" : "border-neutral-950 bg-neutral-950 text-white hover:bg-neutral-700"}`}>Elegir {name.replace("Pack ", "")} <span aria-hidden="true">↗</span></Link>
   </motion.article>;
 }

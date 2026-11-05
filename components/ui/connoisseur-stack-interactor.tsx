@@ -52,8 +52,8 @@ export const Component = ({
     
     gsap.set(selector, { scale: 0, transformOrigin: "50% 50%" });
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { gsap.set(selector, { scale: 1 }); return; }
-    const tl = gsap.timeline();
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { mainGroupRef.current?.removeAttribute("clip-path"); return; }
+    const tl = gsap.timeline({ onComplete: () => { mainGroupRef.current?.removeAttribute("clip-path"); } });
 
     // 1. IN (Expo Out)
     tl.to(selector, {
@@ -62,12 +62,10 @@ export const Component = ({
       stagger: { amount: 0.4, from: "random" },
       ease: "expo.out",
     })
-    // 2. IDLE (Sine Breath)
+    // Expand each distinct mask until its pieces meet, then show the full image.
     .to(selector, {
-      scale: 1.05,
-      duration: 1.5,
-      yoyo: true,
-      repeat: 1,
+      scale: index === 0 ? 1 : index === 1 ? 1.24 : 1.3,
+      duration: .65,
       ease: "sine.inOut",
       stagger: { amount: 0.2, from: "center" }
     })

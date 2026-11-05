@@ -29,3 +29,7 @@ Las URL CDN de origen son `https://images.unsplash.com/{identificador}?auto=form
 
 Se aplica `docs/AMBIVIO_SISTEMA_MAESTRO_IDENTIDAD.md`: Satoshi y Chillax locales, sistema monocromático y wordmark reutilizado. Las interacciones respetan movimiento reducido. No se incorporan familias de iconos nuevas.
 
+
+## Ajuste editorial posterior
+
+Hero reducido a titular y fotografía a gran escala. CTA único en cabecera: «Descubrir Ambivio» hacia el login existente (que ofrece acceso al registro). Se eliminan etiquetas introductorias, explicaciones pequeñas y el bloque Organiza/Explora/Revisa. FAQ en columna centrada. Cada paquete tiene una composición geométrica y respuesta propia, con texto y dibujo separados. Las tres máscaras fotográficas terminan revelando el encuadre completo, sin huecos; movimiento reducido presenta directamente la imagen completa.
