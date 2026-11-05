@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Menu, User, Xmark } from "iconoir-react";
 import { Dialog as DialogPrimitive } from "radix-ui";
 
+import { WorkspaceBreadcrumbs } from "@/components/layout/workspace-breadcrumbs";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { AmbivioMark } from "@/components/brand/ambivio-mark";
 import { SignOutButton } from "@/components/layout/sign-out-button";
@@ -83,7 +84,8 @@ export function AppShell({
                 </DialogPrimitive.Portal>
               </DialogPrimitive.Root>
 
-              <AmbivioMark className="lg:hidden" symbolClassName="size-5" />
+              <AmbivioMark className="sm:hidden" symbolClassName="size-5" />
+              <WorkspaceBreadcrumbs />
             </div>
 
             <div className="flex min-w-0 items-center gap-2 sm:gap-3">

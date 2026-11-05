@@ -36,12 +36,10 @@ export default async function PropertyDetailPage({
 
   return (
     <div className="mx-auto max-w-7xl space-y-8">
-      <Link href="/properties" className="inline-flex">
-        <Button variant="ghost" size="sm">
+      <Button asChild variant="ghost" size="sm"><Link href="/properties" className="inline-flex">
           <ProductIcon icon={ArrowLeft} className="size-4" />
           Todas las propiedades
-        </Button>
-      </Link>
+        </Link></Button>
 
       <div className="flex flex-wrap items-end justify-between gap-5 border-b border-border pb-7">
         <div className="max-w-2xl">
@@ -72,12 +70,10 @@ export default async function PropertyDetailPage({
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Link href={`/properties/${property.id}/edit`}>
-            <Button variant="outline" size="sm">
+          <Button asChild variant="outline" size="sm"><Link href={`/properties/${property.id}/edit`}>
               <ProductIcon icon={EditPencil} className="size-3.5" />
               Editar
-            </Button>
-          </Link>
+            </Link></Button>
           <DeletePropertyButton
             propertyId={property.id}
             title={property.title}
@@ -97,13 +93,9 @@ export default async function PropertyDetailPage({
           </div>
           <div className="flex items-center gap-2">
             {rooms.length === 0 && (
-              <Link href={`/properties/${propertyId}/rooms/new`}>
-                <Button>Añadir primera habitación</Button>
-              </Link>
+              <Button asChild><Link href={`/properties/${propertyId}/rooms/new`}>Añadir primera habitación</Link></Button>
             )}
-            <Link href={`/properties/${propertyId}/rooms`}>
-              <Button variant="outline">Ver habitaciones</Button>
-            </Link>
+            <Button asChild variant="outline"><Link href={`/properties/${propertyId}/rooms`}>Ver habitaciones</Link></Button>
           </div>
         </CardHeader>
       </Card>

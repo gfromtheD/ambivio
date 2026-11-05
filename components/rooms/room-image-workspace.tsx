@@ -133,6 +133,9 @@ export function RoomImageWorkspace({
         return;
       }
       router.refresh();
+    } catch {
+      setMessage("La conexión se ha interrumpido. Puedes reintentar la subida sin perder la habitación.");
+      router.refresh();
     } finally {
       setUploading(false);
     }
@@ -153,6 +156,8 @@ export function RoomImageWorkspace({
         return;
       }
       await uploadToImage(file, { imageId: created.image.image_id, uploadPath: created.image.upload_path }, false);
+    } catch {
+      setMessage("No se pudo preparar la subida. Comprueba la conexión y vuelve a intentarlo.");
     } finally {
       setUploading(false);
     }
@@ -190,27 +195,25 @@ export function RoomImageWorkspace({
     if (!imageToDelete) return;
     setDeleting(true);
     setMessage(null);
-    const result = await deleteRoomImage(imageToDelete.id);
-    setDeleting(false);
-    setImageToDelete(null);
-    if (result.error) {
-      setMessage(result.error);
-      return;
-    }
-    router.refresh();
+    try {
+      const result = await deleteRoomImage(imageToDelete.id);
+      if (result.error) { setMessage(result.error); return; }
+      setImageToDelete(null);
+      router.refresh();
+    } catch { setMessage("No se pudo eliminar la fotografía. Puedes reintentar la limpieza."); }
+    finally { setDeleting(false); }
   }
 
   async function confirmRoomDelete() {
     setDeleting(true);
     setMessage(null);
-    const result = await deleteRoom(roomId);
-    setDeleting(false);
-    setDeleteRoomOpen(false);
-    if (result.error) {
-      setMessage(result.error);
-      return;
-    }
-    router.push(`/properties/${propertyId}/rooms`);
+    try {
+      const result = await deleteRoom(roomId);
+      if (result.error) { setMessage(result.error); return; }
+      setDeleteRoomOpen(false);
+      router.push(`/properties/${propertyId}/rooms`);
+    } catch { setMessage("No se pudo completar la limpieza. Vuelve a intentarlo."); }
+    finally { setDeleting(false); }
   }
 
   return (
@@ -270,7 +273,7 @@ export function RoomImageWorkspace({
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {images.map((image, index) => {
-            const isSelected = image.id === selectedImageId;
+            const isSelected = image.id === selectedImage?.id;
             const isReady = image.status === "ready";
             return (
               <article key={image.id} className={`group/image border bg-card transition-[border-color,box-shadow,opacity] duration-[var(--motion-duration-control)] ease-[var(--motion-ease-out)] ${isSelected ? "border-foreground ring-2 ring-ring/20" : "border-border hover:border-foreground/35"} ${image.status === "deleting" ? "opacity-60" : ""}`}>
@@ -279,7 +282,7 @@ export function RoomImageWorkspace({
                     {image.signedUrl ? (
                       // Signed, short-lived private URLs cannot be statically configured for next/image.
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={image.signedUrl} alt="" className="size-full object-cover" />
+                      <img src={image.signedUrl} alt="" className="size-full object-contain" />
                     ) : <div className="flex size-full flex-col justify-between p-5 text-muted-foreground"><span className="text-[0.625rem] font-medium tracking-[0.14em] uppercase">{image.status === "pending" ? "Subida pendiente" : "Eliminando imagen"}</span><ProductIcon icon={image.status === "pending" ? Upload : RefreshDouble} className={`ml-auto size-6 ${image.status === "deleting" ? "animate-spin motion-reduce:animate-none" : ""}`} /></div>}
                     {isSelected && <span className="absolute left-3 bottom-3 flex items-center gap-1.5 border border-foreground bg-background px-2 py-1 text-xs font-medium"><ProductIcon icon={Check} className="size-3.5" />Seleccionada</span>}
                   </div>
