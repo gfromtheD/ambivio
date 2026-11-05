@@ -33,3 +33,8 @@ Se aplica `docs/AMBIVIO_SISTEMA_MAESTRO_IDENTIDAD.md`: Satoshi y Chillax locales
 ## Ajuste editorial posterior
 
 Hero reducido a titular y fotografía a gran escala. CTA único en cabecera: «Descubrir Ambivio» hacia el login existente (que ofrece acceso al registro). Se eliminan etiquetas introductorias, explicaciones pequeñas y el bloque Organiza/Explora/Revisa. FAQ en columna centrada. Cada paquete tiene una composición geométrica y respuesta propia, con texto y dibujo separados. Las tres máscaras fotográficas terminan revelando el encuadre completo, sin huecos; movimiento reducido presenta directamente la imagen completa.
+
+
+## Convergencia geométrica de la galería
+
+Las tres máscaras comparten la entrada de 0,8 s con expo.out y stagger de 0,4 s, seguida de 0,65 s con sine.inOut y stagger central de 0,2 s. En dormitorio y comedor se interpolan también posición, tamaño y radios de las piezas hasta una retícula que cubre el encuadre completo, con solape de 1 unidad para evitar costuras. La máscara permanece aplicada: se elimina el temporizador de 1900 ms y no se sustituye por una imagen sin máscara. Hover, foco y clic activan la selección; una selección nueva revierte la animación anterior. Movimiento reducido aplica directamente la geometría final.

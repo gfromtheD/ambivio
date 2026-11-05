@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { useRef, useState, useLayoutEffect, useCallback, useEffect } from "react";
+import { useRef, useState, useLayoutEffect, useCallback } from "react";
 import gsap from "gsap";
 
 interface MenuItem {
@@ -36,7 +36,6 @@ export const Component = ({
   className
 }: { items?: MenuItem[]; className?: string }) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [revealComplete, setRevealComplete] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<SVGImageElement>(null);
   const mainGroupRef = useRef<SVGGElement>(null);
@@ -53,25 +52,45 @@ export const Component = ({
     
     gsap.set(selector, { scale: 0, transformOrigin: "50% 50%" });
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { mainGroupRef.current?.removeAttribute("clip-path"); return; }
-    const tl = gsap.timeline({ onComplete: () => { mainGroupRef.current?.removeAttribute("clip-path"); } });
+    const tiles = containerRef.current?.querySelectorAll<SVGRectElement>(selector);
+    const finalGeometry = (element: SVGRectElement) => ({
+      x: Number(element.dataset.finalX ?? element.getAttribute("x")),
+      y: Number(element.dataset.finalY ?? element.getAttribute("y")),
+      width: Number(element.dataset.finalWidth ?? element.getAttribute("width")),
+      height: Number(element.dataset.finalHeight ?? element.getAttribute("height")),
+      rx: 0,
+    });
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      tiles?.forEach(tile => gsap.set(tile, { scale: 1, attr: finalGeometry(tile) }));
+      return;
+    }
+    const tl = gsap.timeline();
 
     // 1. IN (Expo Out)
     tl.to(selector, {
       scale: 1,
+      attr: {
+        x: (_: number, tile: SVGRectElement) => finalGeometry(tile).x,
+        y: (_: number, tile: SVGRectElement) => finalGeometry(tile).y,
+        width: (_: number, tile: SVGRectElement) => finalGeometry(tile).width,
+        height: (_: number, tile: SVGRectElement) => finalGeometry(tile).height,
+        rx: 0,
+      },
       duration: 0.8,
       stagger: { amount: 0.4, from: "random" },
       ease: "expo.out",
     })
     // Expand each distinct mask until its pieces meet, then show the full image.
     .to(selector, {
-      scale: index === 0 ? 1 : index === 1 ? 1.24 : 1.3,
+      scale: 1,
       duration: .65,
       ease: "sine.inOut",
       stagger: { amount: 0.2, from: "center" }
     })
     ;
 
+    // Each mask fills its own tiled footprint during the same entrance as 01.
+    // Keep the mask in place: there is no timed switch to an unmasked image.
     masterTl.current = tl;
   }, [items]);
 
@@ -82,14 +101,8 @@ export const Component = ({
     return () => ctx.revert();
   }, [createLoop, activeIndex]);
 
-  useEffect(() => {
-    const timer = window.setTimeout(() => setRevealComplete(true), 1900);
-    return () => window.clearTimeout(timer);
-  }, [activeIndex]);
-
   const handleItemHover = (index: number) => {
     if (index === activeIndex) return;
-    setRevealComplete(false);
     setActiveIndex(index);
   };
 
@@ -156,12 +169,12 @@ export const Component = ({
             </clipPath>
 
             <clipPath id="clip-hexagons">
-              <rect className="path" x="20" y="20" width="200" height="280" rx="12" />
-              <rect className="path" x="20" y="320" width="200" height="160" rx="12" />
-              <rect className="path" x="240" y="20" width="240" height="140" rx="12" />
-              <rect className="path" x="240" y="180" width="110" height="160" rx="12" />
-              <rect className="path" x="370" y="180" width="110" height="160" rx="12" />
-              <rect className="path" x="240" y="360" width="240" height="120" rx="12" />
+              <rect className="path" data-final-x="0" data-final-y="0" data-final-width="231" data-final-height="311" x="20" y="20" width="200" height="280" rx="12" />
+              <rect className="path" data-final-x="0" data-final-y="310" data-final-width="231" data-final-height="190" x="20" y="320" width="200" height="160" rx="12" />
+              <rect className="path" data-final-x="230" data-final-y="0" data-final-width="270" data-final-height="161" x="240" y="20" width="240" height="140" rx="12" />
+              <rect className="path" data-final-x="230" data-final-y="160" data-final-width="136" data-final-height="191" x="240" y="180" width="110" height="160" rx="12" />
+              <rect className="path" data-final-x="365" data-final-y="160" data-final-width="135" data-final-height="191" x="370" y="180" width="110" height="160" rx="12" />
+              <rect className="path" data-final-x="230" data-final-y="350" data-final-width="270" data-final-height="150" x="240" y="360" width="240" height="120" rx="12" />
             </clipPath>
 
             {/* Grid Squares with rx="4" as requested */}
@@ -170,6 +183,10 @@ export const Component = ({
                 <rect
                   key={i}
                   className="path"
+                  data-final-x={(i % 3) * (500 / 3)}
+                  data-final-y={Math.floor(i / 3) * (500 / 3)}
+                  data-final-width={500 / 3 + 1}
+                  data-final-height={500 / 3 + 1}
                   x={(i % 3) * 160 + 20}
                   y={Math.floor(i / 3) * 160 + 20}
                   width="140"
@@ -180,7 +197,7 @@ export const Component = ({
             </clipPath>
           </defs>
 
-          <g ref={mainGroupRef} clipPath={revealComplete ? undefined : `url(#${items[activeIndex].clipId})`}>
+          <g ref={mainGroupRef} clipPath={`url(#${items[activeIndex].clipId})`}>
             <image
               ref={imageRef}
               href={items[activeIndex].image}
