@@ -85,7 +85,7 @@ export function AppShell({
                 </DialogPrimitive.Portal>
               </DialogPrimitive.Root>
 
-              <AmbivioMark className="sm:hidden" symbolClassName="size-5" />
+              <AmbivioMark className="sm:hidden" />
               <WorkspaceBreadcrumbs />
             </div>
 
