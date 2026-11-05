@@ -1,5 +1,7 @@
 # PROJECT_AUDIT.md
 
+> Documento histórico del 15 de agosto de 2026. Para el estado actual, avances y pendientes vigentes, consultar [ESTADO_Y_AVANCES.md](ESTADO_Y_AVANCES.md).
+
 Auditoría del proyecto y revisión posterior a las decisiones aprobadas.
 
 Fecha: 2026-08-15

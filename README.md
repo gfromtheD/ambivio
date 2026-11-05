@@ -1,4 +1,10 @@
-# Virtual Staging SaaS
+# Ambivio
+
+## Estado actual y avances
+
+[Informe de avances, progreso comparado y pendientes priorizados](docs/ESTADO_Y_AVANCES.md) · actualizado el 5 de noviembre de 2026.
+
+Web: [ambivio-app.vercel.app](https://ambivio-app.vercel.app). IA con MockAdapter y Stripe en pruebas; MVP pendiente de validación comercial.
 
 AI-powered virtual staging platform for small real-estate agencies.
 

@@ -11,7 +11,7 @@
 ## Configuración
 
 - Producción debe definir `NEXT_PUBLIC_SITE_URL` con el origen HTTPS canónico, sin rutas.
-- Mantener ese origen y su `/auth/callback` en la lista de redirecciones autorizadas de Supabase. Esta tarea no pudo comprobar la configuración remota por caducidad del acceso administrativo.
+- Mantener ese origen y su `/auth/callback` en la lista de redirecciones autorizadas de Supabase. El 5 de noviembre de 2026 se verificó y actualizó el origen remoto a `https://ambivio-app.vercel.app`; queda pendiente comprobar entrega de correo a un buzón real. Estado centralizado en [ESTADO_Y_AVANCES.md](ESTADO_Y_AVANCES.md).
 - En desarrollo se conserva el host de bucle local y el puerto de la solicitud; evita intercambiar localhost con 127.0.0.1 durante el canje.
 - No confiar en `x-forwarded-host` enviado por el solicitante para elegir el destino.
 - El registro respeta si Supabase requiere confirmar el correo: muestra el mensaje de confirmación si no hay sesión y entra directamente si el proveedor ya la ha emitido.

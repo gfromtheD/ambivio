@@ -1,5 +1,7 @@
 # ROADMAP.md
 
+> Este documento describe el plan por fases, no certifica su ejecución. Consultar [ESTADO_Y_AVANCES.md](ESTADO_Y_AVANCES.md) para el estado verificado y los pendientes actuales.
+
 ## Objetivo
 
 Construir el MVP en el orden correcto, reduciendo dependencias y evitando trabajo prematuro.
