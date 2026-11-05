@@ -195,3 +195,7 @@
 .landing .pricing-liquid { --n-tint: rgba(255,255,255,.45); }
 .landing .pricing-liquid-dark { --n-tint: rgba(255,255,255,.12); }
 .landing .pricing-liquid-dark .nimbus-glass { box-shadow: inset 0 1px 1px rgba(255,255,255,.6), inset 0 0 0 1px rgba(255,255,255,.28), 0 8px 24px -16px rgba(255,255,255,.4); }
+
+.space-benefit-reveal { transition: grid-template-rows 280ms cubic-bezier(.23,1,.32,1); }
+.space-benefit-copy { transition: transform 280ms cubic-bezier(.23,1,.32,1), opacity 180ms ease-out; }
+@media (prefers-reduced-motion: reduce) { .space-benefit-reveal, .space-benefit-copy { transition: none; transform: none; } }

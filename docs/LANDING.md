@@ -46,3 +46,7 @@ Se elimina `squishy-card-component.tsx` y se sustituye toda la sección por `pri
 ## Cristal líquido y cálculo por periodo
 
 Los CTA Empezar reutilizan LiquidNavbar con un único enlace y etiqueta accesible por paquete: mismo shader, ondas y fallback que la navegación. Se añade selector Mensual/Anual con indicador animado y NumberFlow. Es un presupuesto ilustrativo calculado con 1 paquete al mes o 12 al año: precios 19/49/89 frente a 228/588/1068 EUR; créditos 10/50/100 frente a 120/600/1200. Una nota visible distingue la estimación de la compra real de packs individuales. No hay descuentos inventados ni cambios en checkout, Stripe o contratos de cobro.
+
+## Beneficios desplegables
+
+La galería se convierte en «Del espacio a la propuesta», con Organiza, Explora y Revisa. Cada título conserva la imagen y máscara que ocupaba su posición. La opción activa despliega dos frases mediante una transición de altura de 280 ms, desplazamiento de 8 px y entrada de opacidad; la opción anterior se cierra. La selección funciona con hover, foco y clic, y mantiene un solo texto abierto. Los controles exponen aria-expanded/aria-controls y los paneles inactivos quedan fuera del árbol accesible. Movimiento reducido elimina los desplazamientos. La navegación pasa de Inspiración a Cómo funciona conservando su ancla.

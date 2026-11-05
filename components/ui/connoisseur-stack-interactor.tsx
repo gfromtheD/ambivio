@@ -1,11 +1,12 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { useRef, useState, useLayoutEffect, useCallback } from "react";
+import { useRef, useState, useLayoutEffect, useCallback, useId } from "react";
 import gsap from "gsap";
 
 interface MenuItem {
   num: string;
   name: string;
+  description: string;
   clipId: string;
   image: string;
 }
@@ -13,19 +14,22 @@ interface MenuItem {
 const defaultItems: MenuItem[] = [
   {
     num: "01",
-    name: "Salón contemporáneo",
+    name: "Organiza",
+    description: "Reúne cada inmueble, sus estancias y sus fotografías en un mismo lugar. Mantén una referencia clara del espacio original y retoma el trabajo sin perder el contexto.",
     clipId: "clip-original",
     image: "/images/salon.jpg"
   },
   {
     num: "02",
-    name: "Dormitorio sereno",
+    name: "Explora",
+    description: "Define el tipo de estancia y el estilo que quieres estudiar. Explora una dirección visual para ese espacio y conserva sus distintas versiones para revisarlas con criterio.",
     clipId: "clip-hexagons",
     image: "/images/dormitorio.jpg"
   },
   {
     num: "03",
-    name: "Comedor natural",
+    name: "Revisa",
+    description: "Consulta el historial de cada estancia y contrasta las propuestas con la fotografía original. Revisa cada detalle antes de descargar el resultado que quieras utilizar.",
     clipId: "clip-pixels",
     image: "/images/comedor.jpg"
   }
@@ -35,6 +39,7 @@ export const Component = ({
   items = defaultItems,
   className
 }: { items?: MenuItem[]; className?: string }) => {
+  const descriptionId = useId();
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<SVGImageElement>(null);
@@ -118,7 +123,7 @@ export const Component = ({
       
       {/* LEFT SIDE: HIGH CONTRAST MENU */}
       <div className="z-20 w-full md:w-1/2">
-        <nav>
+        <nav aria-label="Cómo funciona Ambivio">
           <ul className="flex flex-col gap-10">
             {items.map((item, index) => (
               <li
@@ -126,7 +131,7 @@ export const Component = ({
                 onMouseEnter={() => handleItemHover(index)}
                 className="group cursor-pointer"
               >
-                <button type="button" onClick={() => handleItemHover(index)} onFocus={() => handleItemHover(index)} aria-pressed={activeIndex === index} className="flex w-full items-start gap-6 text-left focus-visible:outline-2 focus-visible:outline-offset-8">
+                <button type="button" onClick={() => handleItemHover(index)} onFocus={() => handleItemHover(index)} aria-expanded={activeIndex === index} aria-controls={`${descriptionId}-${index}`} className="flex w-full items-start gap-6 text-left focus-visible:outline-2 focus-visible:outline-offset-8">
                   {/* Numbers: Increased visibility for non-hover state */}
                   <span className={cn(
                     "text-3xl font-bold transition-all duration-500 mt-2",
@@ -139,7 +144,7 @@ export const Component = ({
                   
                   {/* Main Text: Enhanced visibility logic */}
                   <h2 className={cn(
-                    "font-heading text-4xl md:text-5xl font-medium tracking-tighter leading-[0.85] transition-all duration-700",
+                    "font-heading text-4xl md:text-5xl font-medium tracking-tighter leading-[1.1] transition-all duration-700",
                     activeIndex === index 
                       ? "text-zinc-950 dark:text-white opacity-100 translate-x-4" 
                       // INACTIVE STATE: Increased from Zinc-200 to Zinc-400 for Light Mode
@@ -148,10 +153,12 @@ export const Component = ({
                         "text-zinc-500 dark:text-transparent " + 
                         "dark:[text-stroke:1.5px_#52525b] dark:[-webkit-text-stroke:1.5px_#52525b]"
                   )}>
-                    {item.name.split(' ')[0]}<br />
-                    {item.name.split(' ')[1]}
+                    {item.name}
                   </h2>
                 </button>
+                <div id={`${descriptionId}-${index}`} aria-hidden={activeIndex !== index} className={cn("space-benefit-reveal ml-14 grid", activeIndex === index ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}>
+                  <div className="overflow-hidden"><p className={cn("space-benefit-copy max-w-[390px] pt-5 pr-5 pb-1 text-base leading-relaxed text-neutral-600 dark:text-neutral-300", activeIndex === index ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0")}>{item.description}</p></div>
+                </div>
               </li>
             ))}
           </ul>
