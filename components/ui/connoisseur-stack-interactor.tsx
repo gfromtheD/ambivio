@@ -77,10 +77,10 @@ export const Component = ({
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      createLoop(0);
+      createLoop(activeIndex);
     }, containerRef);
     return () => ctx.revert();
-  }, [createLoop]);
+  }, [createLoop, activeIndex]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setRevealComplete(true), 1900);
@@ -91,7 +91,6 @@ export const Component = ({
     if (index === activeIndex) return;
     setRevealComplete(false);
     setActiveIndex(index);
-    createLoop(index);
   };
 
   return (
@@ -184,7 +183,7 @@ export const Component = ({
           <g ref={mainGroupRef} clipPath={revealComplete ? undefined : `url(#${items[activeIndex].clipId})`}>
             <image
               ref={imageRef}
-              href={items[0].image}
+              href={items[activeIndex].image}
               width="500"
               height="500"
               preserveAspectRatio="xMidYMid slice"
