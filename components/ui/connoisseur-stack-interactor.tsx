@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { useRef, useState, useLayoutEffect, useCallback } from "react";
+import { useRef, useState, useLayoutEffect, useCallback, useEffect } from "react";
 import gsap from "gsap";
 
 interface MenuItem {
@@ -36,6 +36,7 @@ export const Component = ({
   className
 }: { items?: MenuItem[]; className?: string }) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [revealComplete, setRevealComplete] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<SVGImageElement>(null);
   const mainGroupRef = useRef<SVGGElement>(null);
@@ -81,8 +82,14 @@ export const Component = ({
     return () => ctx.revert();
   }, [createLoop]);
 
+  useEffect(() => {
+    const timer = window.setTimeout(() => setRevealComplete(true), 1900);
+    return () => window.clearTimeout(timer);
+  }, [activeIndex]);
+
   const handleItemHover = (index: number) => {
     if (index === activeIndex) return;
+    setRevealComplete(false);
     setActiveIndex(index);
     createLoop(index);
   };
@@ -174,7 +181,7 @@ export const Component = ({
             </clipPath>
           </defs>
 
-          <g ref={mainGroupRef} clipPath={`url(#${items[0].clipId})`}>
+          <g ref={mainGroupRef} clipPath={revealComplete ? undefined : `url(#${items[activeIndex].clipId})`}>
             <image
               ref={imageRef}
               href={items[0].image}
