@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AmbivioMark } from "@/components/brand/ambivio-mark";
 import { InspirationGallery, LandingNavigation } from "@/components/landing/landing-interactions";
+import { LandingFaq } from "@/components/landing/landing-faq";
 import PricingSection3 from "@/components/ui/pricing-section-3";
 import { CREDIT_PACKAGES } from "@/lib/stripe";
 
@@ -28,7 +29,7 @@ export default function HomePage() {
     </section>
     <section id="inspiracion" className="landing-container landing-section"><h2 className="landing-title">Del espacio a la propuesta.</h2><InspirationGallery /></section>
     <section id="precios" className="landing-container landing-section"><PricingSection3 plans={CREDIT_PACKAGES} /></section>
-    <section className="landing-container landing-section"><div className="landing-faq"><h2 className="landing-title landing-section-heading text-center">Preguntas frecuentes.</h2><div>{faqs.map(([q,a])=><details key={q} className="group border-t py-7 last:border-b"><summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-medium">{q}<span aria-hidden="true" className="text-xl group-open:rotate-45">+</span></summary><p className="mt-5 text-base leading-relaxed text-muted-foreground">{a}</p></details>)}</div></div></section>
+    <section className="landing-container landing-section"><div className="landing-faq"><h2 className="landing-title landing-section-heading text-center">Preguntas frecuentes.</h2><LandingFaq items={faqs} /></div></section>
     <section className="landing-closing">
       <div className="landing-container landing-closing-inner"><h2 className="landing-title">Empieza por un espacio.</h2><Link href="/register" className="landing-button landing-button-light">Crear mi cuenta <span aria-hidden="true">↗</span></Link></div>
     </section>
