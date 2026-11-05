@@ -76,7 +76,7 @@ Deno.serve(async (req) => {
     return respond({ job_id: jobId, ok: false, step: "claim", error: "claim_failed" }, 500);
   }
 
-  if (!claimed) {
+  if (!claimed || claimed.id !== jobId) {
     return respond({
       job_id: jobId,
       ok: false,

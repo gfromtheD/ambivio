@@ -331,3 +331,7 @@ Despliegue coordinado necesario: (1) generar un secreto aleatorio exclusivo de a
 El borrado de propiedades reutiliza prepare/complete_room_deletion y la limpieza de Storage de cada habitación. La nueva migración 20261106010000_property_deletion_cleanup.sql impide el borrado directo por authenticated y exige que no queden habitaciones ni objetos privados. No cambia las reglas de consumo o devolución de créditos.
 
 Validación local: worker_security_test.ts (autorización y destino fijo), Deno check de ambos workers y security_isolation.sql en una base aislada con rollback. La comprobación local no certifica que el servidor remoto haya aplicado estas migraciones.
+
+### Verificación remota completada (2026-11-05)
+
+Aplicadas las migraciones 20261106000000, 20261106010000 y 20261106020000 con historial. Desplegados process-generation v10 y process-job v5, ambos con verify_jwt. Peticiones públicas: 401. Peticiones internas sobre UUID inexistente: claimed:false, sin crear trabajos. Corregida la interpretación de una fila compuesta vacía en process-job. RLS, buckets privados, permisos internos, configuración privada y guardas de borrado verificados en catálogo. Origen y callbacks de recuperación revisados; eliminado el comodín global de Vercel y añadido localhost actual. No se han ejecutado pruebas destructivas con datos de clientes ni cambios de reglas de crédito.
