@@ -29,7 +29,7 @@ export function AuthCard({
       <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
         {description}
       </p>
-      <div className="mt-8 border-t border-border pt-6">{children}</div>
+      <div className="mt-8 pt-6">{children}</div>
     </section>
   );
 }

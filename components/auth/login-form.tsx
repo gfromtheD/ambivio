@@ -28,6 +28,7 @@ export function LoginForm({ initialError = null }: { initialError?: string | nul
             type="email"
             autoComplete="email"
             placeholder="tu@agencia.com"
+            className="border-0 bg-muted/70 shadow-none"
             required
           />
         </div>
@@ -38,6 +39,7 @@ export function LoginForm({ initialError = null }: { initialError?: string | nul
             name="password"
             type="password"
             autoComplete="current-password"
+            className="border-0 bg-muted/70 shadow-none"
             required
           />
         </div>
@@ -53,7 +55,7 @@ export function LoginForm({ initialError = null }: { initialError?: string | nul
           )}
         </Button>
       </form>
-      <div className="mt-6 flex flex-col gap-3 border-t border-border pt-5 text-sm sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-6 flex flex-col gap-3 pt-5 text-sm sm:flex-row sm:items-center sm:justify-between">
         <Link href="/register" className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors duration-[var(--motion-duration-control)] hover:decoration-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30">
           Crear cuenta
         </Link>
