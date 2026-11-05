@@ -79,6 +79,11 @@ const NIMBUS_CSS = `
   background:radial-gradient(120% 140% at 30% 0%,rgba(255,255,255,.75),rgba(255,255,255,0) 55%),rgba(255,255,255,.38);
   box-shadow:inset 0 1px 1px rgba(255,255,255,.95),inset 0 -2px 6px rgba(0,162,255,.22),inset 0 0 0 1px rgba(255,255,255,.55),0 6px 16px -6px rgba(0,70,140,.45)}
 .nimbus-nav[data-gl="off"] .nimbus-drop{display:block}
+/* iOS webviews can render the transparent WebGL layer as a black rectangle. */
+@supports (-webkit-touch-callout:none){
+  .nimbus-water{display:none}
+  .nimbus-drop{display:block}
+}
 .nimbus-item{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 16px;border:0;border-radius:999px;background:none;color:var(--n-fg-soft);
   font-family:inherit;font-weight:500;font-size:14px;line-height:1;letter-spacing:-.01em;text-decoration:none;cursor:pointer;transition:color .25s}
 .nimbus-item:hover,.nimbus-item[aria-current="page"]{color:var(--n-fg)}
@@ -426,8 +431,11 @@ export function LiquidNavbar({
     const s = st.current
     s.reduce = !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
     const cv = canvasRef.current
-    s.glc = cv ? initGL(cv) : null
-    if (!s.glc && navRef.current) navRef.current.dataset.gl = "off"
+    // Use the existing glass fallback in iOS Safari and embedded iOS browsers.
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+    const useFallback = isIOS || CSS.supports("-webkit-touch-callout", "none")
+    s.glc = cv && !useFallback ? initGL(cv) : null
+    if (!s.glc) setGl("off")
     const lost = (e: Event) => { e.preventDefault(); s.glc = null; setGl("off") }
     cv?.addEventListener("webglcontextlost", lost)
     const io = new IntersectionObserver(([e]) => { s.visible = e.isIntersecting; if (s.visible) loop() })
