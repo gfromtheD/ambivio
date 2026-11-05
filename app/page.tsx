@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { AmbivioMark } from "@/components/brand/ambivio-mark";
-import { InspirationGallery, LandingNavigation } from "@/components/landing/landing-interactions";
+import { DeferredPricing, InspirationGallery, LandingNavigation } from "@/components/landing/landing-interactions";
 import { LandingFaq } from "@/components/landing/landing-faq";
 import PricingSection3 from "@/components/ui/pricing-section-3";
 import { CREDIT_PACKAGES } from "@/lib/stripe";
@@ -28,7 +28,7 @@ export default function HomePage() {
       <figure className="relative"><div className="relative aspect-[4/5] overflow-hidden bg-neutral-100 md:aspect-[1.8/1]"><Image src="/images/salon.jpg" alt="Salón luminoso con materiales naturales y mobiliario contemporáneo. Fotografía de inspiración." fill priority sizes="100vw" className="object-cover" /></div></figure>
     </section>
     <section id="inspiracion" className="landing-container landing-section"><h2 className="landing-title">Del espacio a la propuesta.</h2><InspirationGallery /></section>
-    <section id="precios" className="landing-container landing-section"><PricingSection3 plans={CREDIT_PACKAGES} /></section>
+    <section id="precios" className="landing-container landing-section"><DeferredPricing><PricingSection3 plans={CREDIT_PACKAGES} /></DeferredPricing></section>
     <section className="landing-container landing-section"><div className="landing-faq"><h2 className="landing-title landing-section-heading text-center">Preguntas frecuentes.</h2><LandingFaq items={faqs} /></div></section>
     <section className="landing-closing">
       <div className="landing-container landing-closing-inner"><h2 className="landing-title">Empieza por un espacio.</h2><Link href="/register" className="landing-button landing-button-light">Crear mi cuenta <span aria-hidden="true">↗</span></Link></div>
