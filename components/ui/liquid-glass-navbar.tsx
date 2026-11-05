@@ -24,6 +24,7 @@ export type LiquidNavItem = {
 }
 
 export type LiquidNavbarProps = {
+  ariaLabel?: string
   items?: LiquidNavItem[]
   defaultActive?: number
   active?: number
@@ -226,6 +227,7 @@ function supportsRefraction() {
 }
 
 export function LiquidNavbar({
+  ariaLabel = "Navegación principal",
   items = DEFAULT_ITEMS,
   defaultActive = 0,
   active,
@@ -532,7 +534,7 @@ export function LiquidNavbar({
       data-gl={gl}
       data-compact={compact === undefined ? undefined : String(compact)}
       data-refract={refract ? "on" : "off"}
-      aria-label="Navegación principal"
+      aria-label={ariaLabel}
       onKeyDown={onKeyDown}
       onPointerMove={onMove}
       onPointerLeave={() => { setHovered(null); st.current.mouse.on = false; loop() }}
@@ -556,7 +558,7 @@ export function LiquidNavbar({
         const props = {
           ref: (el: HTMLElement | null) => { itemRefs.current[i] = el },
           className: "nimbus-item",
-          "aria-current": i === current ? ("page" as const) : undefined,
+          "aria-current": items.length > 1 && i === current ? ("page" as const) : undefined,
           onClick: () => select(i),
           onPointerEnter: (event: React.PointerEvent) => { if (event.pointerType === "mouse") setHovered(i) },
         }

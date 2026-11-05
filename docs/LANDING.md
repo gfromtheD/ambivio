@@ -42,3 +42,7 @@ Las tres máscaras comparten la entrada de 0,8 s con expo.out y stagger de 0,4 s
 ## Sustitución de precios por Pricing Section 3
 
 Se elimina `squishy-card-component.tsx` y se sustituye toda la sección por `pricing-section-3.tsx`, adaptado del recurso proporcionado. Reutiliza Card del producto y Framer Motion existente; añade NumberFlow, TimelineContent y VerticalCutReveal. No instala una segunda familia de iconos ni duplica Motion. Mantiene el panel oscuro destacado y la composición de tres columnas del recurso. Los paquetes se reciben de CREDIT_PACKAGES desde servidor. No se muestra un selector mensual/anual ni descuentos ficticios: los paquetes actuales son pagos únicos. Los botones enlazan al registro.
+
+## Cristal líquido y cálculo por periodo
+
+Los CTA Empezar reutilizan LiquidNavbar con un único enlace y etiqueta accesible por paquete: mismo shader, ondas y fallback que la navegación. Se añade selector Mensual/Anual con indicador animado y NumberFlow. Es un presupuesto ilustrativo calculado con 1 paquete al mes o 12 al año: precios 19/49/89 frente a 228/588/1068 EUR; créditos 10/50/100 frente a 120/600/1200. Una nota visible distingue la estimación de la compra real de packs individuales. No hay descuentos inventados ni cambios en checkout, Stripe o contratos de cobro.
