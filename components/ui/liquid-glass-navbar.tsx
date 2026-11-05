@@ -238,6 +238,8 @@ export function LiquidNavbar({
 }: LiquidNavbarProps) {
   const [inner, setInner] = React.useState(defaultActive)
   const current = active ?? inner
+  const [hovered, setHovered] = React.useState<number | null>(null)
+  const indicatorIndex = hovered ?? current
   const navRef = React.useRef<HTMLElement>(null)
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
   const dropRef = React.useRef<HTMLSpanElement>(null)
@@ -382,7 +384,7 @@ export function LiquidNavbar({
   /* ---- layout ---- */
   const measure = React.useCallback(() => {
     const nav = navRef.current
-    const el = itemRefs.current[current]
+    const el = itemRefs.current[indicatorIndex]
     if (!nav || !el) return
     const s = st.current
     s.w = nav.offsetWidth
@@ -415,7 +417,7 @@ export function LiquidNavbar({
       }
     }
     loop()
-  }, [current, loop])
+  }, [indicatorIndex, loop])
 
   React.useEffect(() => {
     const setupFrame = requestAnimationFrame(() => setRefract(supportsRefraction()))
@@ -533,7 +535,7 @@ export function LiquidNavbar({
       aria-label="Navegación principal"
       onKeyDown={onKeyDown}
       onPointerMove={onMove}
-      onPointerLeave={() => { st.current.mouse.on = false; loop() }}
+      onPointerLeave={() => { setHovered(null); st.current.mouse.on = false; loop() }}
       onPointerDown={(e) => { const p = local(e.clientX, e.clientY); ripple(p.x, p.y, 0.8) }}
       style={style}
     >
@@ -556,6 +558,7 @@ export function LiquidNavbar({
           className: "nimbus-item",
           "aria-current": i === current ? ("page" as const) : undefined,
           onClick: () => select(i),
+          onPointerEnter: (event: React.PointerEvent) => { if (event.pointerType === "mouse") setHovered(i) },
         }
         const content = (
           <>
