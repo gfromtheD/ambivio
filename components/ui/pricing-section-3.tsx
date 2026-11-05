@@ -23,7 +23,6 @@ const revealVariants = {
 
 export default function PricingSection3({ plans }: { plans: readonly Plan[] }) {
   const pricingRef = useRef<HTMLDivElement>(null);
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [isYearly, setIsYearly] = useState(false);
   const switchId = useId();
   const reduce = useReducedMotion();
@@ -41,12 +40,11 @@ export default function PricingSection3({ plans }: { plans: readonly Plan[] }) {
     <p className="mb-10 text-sm text-muted-foreground">Estimación de 1 pack al mes o 12 al año. Los packs se compran por separado; no es una suscripción.</p>
     <TimelineContent animationNum={2} timelineRef={pricingRef} customVariants={revealVariants} className="mx-auto grid gap-4 rounded-lg bg-gradient-to-b from-neutral-100 to-neutral-200 p-3 md:grid-cols-3">
       {plans.map((plan, index) => {
-        const popular = selectedPlan === plan.id;
+        const popular = false;
         return <TimelineContent key={plan.id} animationNum={index + 3} timelineRef={pricingRef} customVariants={revealVariants} className={cn("relative flex", popular && "z-10")}>
-          <motion.div className="relative flex h-full w-full" animate={{ scale: popular && !reduce ? 1.04 : 1, y: popular && !reduce ? -8 : 0 }} transition={{ duration: reduce ? 0 : .28, ease: [.23, 1, .32, 1] }}>
+          <div className="relative flex h-full w-full">
           <Card className={cn("relative flex min-h-[440px] w-full flex-col justify-between gap-0 overflow-hidden rounded-[24px] border-0 pt-6 shadow-none transition-colors duration-300 [--card-spacing:--spacing(6)]", popular ? "bg-neutral-950 text-white" : "bg-white text-neutral-900")}>
-            <button type="button" aria-label={`Seleccionar ${plan.name}`} aria-pressed={popular} onClick={() => setSelectedPlan(popular ? null : plan.id)} className="absolute inset-0 z-0 cursor-pointer rounded-[24px] focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-neutral-400" />
-            <CardContent className="pointer-events-none relative z-10 pt-0">
+            <CardContent className="relative z-10 pt-0">
               <div className="space-y-2 pb-3">
                 <div className="flex flex-wrap items-baseline gap-x-2"><NumberFlow value={plan.priceEur * multiplier} locales="es-ES" format={{ style: "currency", currency: "EUR", maximumFractionDigits: 0 }} className="font-heading text-4xl font-semibold" /><span className={popular ? "text-neutral-200" : "text-neutral-600"}>/{isYearly ? "año" : "mes"}</span></div>
               </div>
@@ -61,7 +59,7 @@ export default function PricingSection3({ plans }: { plans: readonly Plan[] }) {
               <LiquidNavbar ariaLabel={`Acceso al pack ${plan.name}`} items={[{ label: "Empezar", href: "/register", fx: "none" }]} tone={popular ? "dark" : "light"} compact={false} sound={false} className={cn("pricing-liquid mb-6 w-full", popular && "pricing-liquid-dark")} />
             </CardFooter>
           </Card>
-          </motion.div>
+          </div>
         </TimelineContent>;
       })}
     </TimelineContent>
