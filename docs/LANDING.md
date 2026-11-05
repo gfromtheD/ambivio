@@ -50,3 +50,7 @@ Los CTA Empezar reutilizan LiquidNavbar con un único enlace y etiqueta accesibl
 ## Beneficios desplegables
 
 La galería se convierte en «Del espacio a la propuesta», con Organiza, Explora y Revisa. Cada título conserva la imagen y máscara que ocupaba su posición. La opción activa despliega dos frases mediante una transición de altura de 280 ms, desplazamiento de 8 px y entrada de opacidad; la opción anterior se cierra. La selección funciona con hover, foco y clic, y mantiene un solo texto abierto. Los controles exponen aria-expanded/aria-controls y los paneles inactivos quedan fuera del árbol accesible. Movimiento reducido elimina los desplazamientos. La navegación pasa de Inspiración a Cómo funciona conservando su ancla.
+
+## Ritmo y continuidad de la landing
+
+Se unifican anchos y márgenes con landing-container y tokens de sección (64–112 px) e interior (32–56 px), eliminando paddings acumulados de galería, precios y FAQ. Precios entra con stagger de 60 ms en lugar de 400 ms. Las animaciones de imágenes y el revelado progresivo de beneficios se conservan. Los CTA generales comparten altura y contorno de píldora; los CTA de precios mantienen cristal líquido con altura equivalente. El cierre y footer comparten superficie oscura, retícula y un único divisor. El footer ocupa todo el ancho y adapta sus columnas a móvil. Navegación en el mismo orden que las secciones.

@@ -115,7 +115,7 @@ export const Component = ({
     <div 
       ref={containerRef} 
       className={cn(
-        "flex flex-col md:flex-row items-center justify-between min-h-[600px] w-full py-12 md:py-20 overflow-hidden transition-colors duration-500",
+        "flex flex-col md:flex-row items-center justify-between w-full pt-[var(--landing-inner-gap)] overflow-hidden transition-colors duration-500",
         "bg-white dark:bg-[#050505]", 
         className
       )}
@@ -156,7 +156,7 @@ export const Component = ({
       </div>
 
       {/* RIGHT SIDE: SQUARE GRID (Sharp Squares) */}
-      <div className="relative w-full md:w-1/2 flex justify-center items-center mt-16 md:mt-0">
+      <div className="relative w-full md:w-1/2 flex justify-center items-center mt-10 md:mt-0">
         <div className="absolute w-[120%] h-[120%] bg-transparent blur-[120px] rounded-full transition-opacity duration-1000" />
         
         <svg role="img" aria-label={items[activeIndex].name} viewBox="0 0 500 500" className="w-[100%] max-w-[500px] h-auto z-10  dark:drop-shadow-[0_0_60px_rgba(0,0,0,0.8)]">
