@@ -196,6 +196,24 @@
 .landing .pricing-liquid-dark { --n-tint: rgba(255,255,255,.12); }
 .landing .pricing-liquid-dark .nimbus-glass { box-shadow: inset 0 1px 1px rgba(255,255,255,.6), inset 0 0 0 1px rgba(255,255,255,.28), 0 8px 24px -16px rgba(255,255,255,.4); }
 
-.space-benefit-reveal { transition: grid-template-rows 280ms cubic-bezier(.23,1,.32,1); }
-.space-benefit-copy { transition: transform 280ms cubic-bezier(.23,1,.32,1), opacity 180ms ease-out; }
-@media (prefers-reduced-motion: reduce) { .space-benefit-reveal, .space-benefit-copy { transition: none; transform: none; } }
+/* Expand from the heading; a soft mask reveals the copy from top to bottom. */
+@property --benefit-reveal {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: -24%;
+}
+.space-benefit-reveal { transition: grid-template-rows 650ms cubic-bezier(.22,1,.36,1); }
+.space-benefit-mask {
+  --benefit-reveal: -24%;
+  mask-image: linear-gradient(to bottom, #000 calc(var(--benefit-reveal) - 24%), transparent var(--benefit-reveal));
+  transition: --benefit-reveal 300ms ease-out;
+}
+.space-benefit-reveal.is-open .space-benefit-mask {
+  --benefit-reveal: 124%;
+  transition: --benefit-reveal 850ms cubic-bezier(.22,.61,.36,1) 60ms;
+}
+.space-benefit-copy { transform-origin: top left; transition: transform 650ms cubic-bezier(.22,1,.36,1), opacity 450ms ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  .space-benefit-reveal, .space-benefit-copy, .space-benefit-mask { transition: none; transform: none; }
+  .space-benefit-mask { mask-image: none; }
+}

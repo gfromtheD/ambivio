@@ -132,32 +132,22 @@ export const Component = ({
                 className="group cursor-pointer"
               >
                 <button type="button" onClick={() => handleItemHover(index)} onFocus={() => handleItemHover(index)} aria-expanded={activeIndex === index} aria-controls={`${descriptionId}-${index}`} className="flex w-full items-start gap-6 text-left focus-visible:outline-2 focus-visible:outline-offset-8">
-                  {/* Numbers: Increased visibility for non-hover state */}
-                  <span className={cn(
-                    "text-3xl font-bold transition-all duration-500 mt-2",
-                    activeIndex === index 
-                      ? "text-foreground scale-110" 
-                      : "text-zinc-400 dark:text-zinc-600" 
-                  )}>
-                    {item.num}
-                  </span>
-                  
                   {/* Main Text: Enhanced visibility logic */}
                   <h2 className={cn(
                     "font-heading text-4xl md:text-5xl font-medium tracking-tighter leading-[1.1] transition-all duration-700",
                     activeIndex === index 
-                      ? "text-zinc-950 dark:text-white opacity-100 translate-x-4" 
+                      ? "text-zinc-950 dark:text-white opacity-100" 
                       // INACTIVE STATE: Increased from Zinc-200 to Zinc-400 for Light Mode
                       // Increased stroke visibility for Dark Mode (#52525b is Zinc-600)
-                      : "opacity-40 translate-x-0 " + 
+                      : "opacity-40 " + 
                         "text-zinc-500 dark:text-transparent " + 
                         "dark:[text-stroke:1.5px_#52525b] dark:[-webkit-text-stroke:1.5px_#52525b]"
                   )}>
                     {item.name}
                   </h2>
                 </button>
-                <div id={`${descriptionId}-${index}`} aria-hidden={activeIndex !== index} className={cn("space-benefit-reveal ml-14 grid", activeIndex === index ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}>
-                  <div className="overflow-hidden"><p className={cn("space-benefit-copy max-w-[390px] pt-5 pr-5 pb-1 text-base leading-relaxed text-neutral-600 dark:text-neutral-300", activeIndex === index ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0")}>{item.description}</p></div>
+                <div id={`${descriptionId}-${index}`} aria-hidden={activeIndex !== index} className={cn("space-benefit-reveal grid", activeIndex === index ? "grid-rows-[1fr] is-open" : "grid-rows-[0fr]")}>
+                  <div className="space-benefit-mask overflow-hidden"><p className={cn("space-benefit-copy max-w-[390px] pt-5 pr-5 pb-1 text-base leading-relaxed text-neutral-600 dark:text-neutral-300", activeIndex === index ? "translate-y-0 opacity-100" : "-translate-y-3 opacity-0")}>{item.description}</p></div>
                 </div>
               </li>
             ))}
