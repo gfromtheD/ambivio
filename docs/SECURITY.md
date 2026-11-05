@@ -321,3 +321,13 @@ Antes de producción:
 ## 19. Regla
 
 Nunca sacrificar aislamiento multi-tenant para acelerar desarrollo.
+
+## Endurecimiento de workers y borrado (2026-11)
+
+Los workers ya no aceptan una URL de API controlada por el cuerpo. Solo usan SUPABASE_URL del entorno. Requieren una credencial interna: Authorization con la service role existente o X-Worker-Secret coincidente con WORKER_SHARED_SECRET. No aceptan una clave pública ni un JWT de usuario. No existe passthrough de credenciales entrantes a Storage. La configuración incompleta falla cerrada y los errores de RPC no se devuelven completos al solicitante.
+
+Despliegue coordinado necesario: (1) generar un secreto aleatorio exclusivo de al menos 32 bytes, (2) guardar el mismo valor en el secreto de Edge WORKER_SHARED_SECRET y en app_config.worker_secret mediante acceso administrativo, (3) aplicar 20261106000000_worker_request_auth.sql para que los schedulers lo envíen, (4) desplegar process-generation y process-job, (5) comprobar una invocación interna y el rechazo de peticiones públicas. Mantener verify_jwt; no desactivar la protección del gateway. No publicar el secreto en archivos versionados ni en logs.
+
+El borrado de propiedades reutiliza prepare/complete_room_deletion y la limpieza de Storage de cada habitación. La nueva migración 20261106010000_property_deletion_cleanup.sql impide el borrado directo por authenticated y exige que no queden habitaciones ni objetos privados. No cambia las reglas de consumo o devolución de créditos.
+
+Validación local: worker_security_test.ts (autorización y destino fijo), Deno check de ambos workers y security_isolation.sql en una base aislada con rollback. La comprobación local no certifica que el servidor remoto haya aplicado estas migraciones.

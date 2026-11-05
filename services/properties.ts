@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 
+import { deleteRoom } from "@/services/rooms";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/lib/types/database";
 
@@ -100,16 +101,18 @@ export async function updatePropertyAction(
   }
 
   const supabase = await createClient();
-  const { error } = await supabase
+  const { data: updated, error } = await supabase
     .from("properties")
     .update({
       title,
       address: address || null,
       updated_at: new Date().toISOString(),
     })
-    .eq("id", propertyId);
+    .eq("id", propertyId)
+    .select("id")
+    .maybeSingle();
 
-  if (error) {
+  if (error || !updated) {
     return { error: "No se pudo guardar la propiedad. Inténtalo de nuevo." };
   }
 
@@ -122,6 +125,18 @@ export async function deletePropertyAction(
 ): Promise<PropertyFormState> {
   void _prevState;
   const supabase = await createClient();
+  const { data: property, error: propertyError } = await supabase.from("properties").select("id").eq("id", propertyId).maybeSingle();
+  if (propertyError || !property) return { error: "La propiedad no está disponible." };
+  const { data: rooms, error: roomsError } = await supabase.from("rooms").select("id").eq("property_id", propertyId);
+  if (roomsError) return { error: "No se pudieron revisar las habitaciones. Inténtalo de nuevo." };
+  if (rooms?.length) {
+    const { data: active, error: activeError } = await supabase.from("generations").select("id").in("room_id", rooms.map(room => room.id)).eq("status", "processing").limit(1);
+    if (activeError || active?.length) return { error: "Espera a que termine la generación antes de eliminar la propiedad." };
+    for (const room of rooms) {
+      const result = await deleteRoom(room.id);
+      if (result.error) return { error: result.error };
+    }
+  }
   const { error } = await supabase.rpc("delete_property", {
     p_property_id: propertyId,
   });
